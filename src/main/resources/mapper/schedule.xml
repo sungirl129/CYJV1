@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.ScheduleDao">
+    <resultMap id="schedule" type="com.cyj.model.ScheduleModel">
+        <id column="id" property="id"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="buy_number" property="buyNumber"/>
+        <result column="is_publish" property="isPublish"/>
+        <result column="state" property="scheduleState"/>
+        <result column="date" property="scheduleDate"/>
+    </resultMap>
+    <select id="getUnpublishedModelByGoodsId" resultMap="schedule" parameterType="int">
+        SELECT * FROM schedule WHERE goods_id=#{id} AND state=0
+    </select>
+
+    <update id="updateBuyNumber">
+        UPDATE schedule SET buy_number=#{buyNumber},date=#{timestamp} WHERE id=#{id}
+    </update>
+
+    <select id="findModelById" resultMap="schedule" parameterType="int">
+        SELECT * FROM schedule WHERE id=#{id}
+    </select>
+
+    <insert id="insertScheduleModel" parameterType="com.cyj.model.ScheduleModel" useGeneratedKeys="true" keyProperty="id">
+        insert into schedule (goods_id,buy_number,is_publish,state,date)
+        values (#{goodsId},#{buyNumber},#{isPublish},#{scheduleState},#{scheduleDate})
+    </insert>
+
+    <select id="getUnpublishScheduleTotalCount" resultMap="schedule" parameterType="int">
+        SELECT * FROM schedule WHERE is_publish = #{isPublish} AND state = #{state}
+    </select>
+
+    <select id="getOnePageUnpublish" resultMap="schedule">
+        SELECT * FROM schedule WHERE is_publish = #{isPublish} AND state=#{state} limit #{offset}, #{pageSize}
+    </select>
+
+    <update id="publishChangeScheduleState" parameterType="int">
+        UPDATE schedule SET is_publish=1,state=1 WHERE id=#{id}
+    </update>
+    <update id="cancelPublish" parameterType="int">
+        UPDATE schedule SET state = 0 WHERE id = #{scheduleId}
+    </update>
+
+    <select id="viewScheduleByGnameYear" parameterType="int" resultMap="schedule">
+        SELECT * FROM schedule WHERE goods_id = #{goodsId} AND YEAR(date) = #{year1}
+    </select>
+</mapper>
+

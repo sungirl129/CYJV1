@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.StockDao">
+    <resultMap id="goods" type="com.cyj.model.GoodsModel">
+        <id column="id" property="id"/>
+        <result column="gname" property="gname"/>
+        <result column="unit" property="unit"/>
+        <result column="spec" property="spec"/>
+        <result column="note" property="note"/>
+        <result column="url" property="url"/>
+    </resultMap>
+    <select id="getStockTotalItem" resultMap="goods">
+        select * from materialinfo
+    </select>
+
+    <select id="findGoodsModelByGoodsId" parameterType="int" resultMap="goods">
+        select * from materialinfo WHERE id=#{id}
+    </select>
+
+    <select id="getOnePageGoodsInfo" resultMap="goods" parameterType="int">
+        SELECT * FROM materialinfo limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="searchGoodsByGnameCondition" resultMap="goods">
+        SELECT * FROM materialinfo WHERE gname=#{condition}
+    </select>
+
+    <select id="searchGoodsByUnitCondition" resultMap="goods">
+        SELECT * FROM materialinfo WHERE unit=#{condition}
+    </select>
+
+    <select id="searchOnePageGoodsByGnameCondition" resultMap="goods">
+        SELECT * FROM materialinfo WHERE gname=#{condition} limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="searchOnePageGoodsByUnitCondition" resultMap="goods">
+        SELECT * FROM materialinfo WHERE unit=#{condition} limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="findGoodsModelByGname" resultMap="goods" parameterType="String">
+        SELECT * FROM materialinfo WHERE gname = #{name}
+    </select>
+</mapper>
+

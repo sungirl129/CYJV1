@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.AdminDao">
+    <resultMap id="admin" type="com.cyj.model.AdminModel">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="NT" property="NT"/>
+        <result column="password" property="password"/>
+    </resultMap>
+    <select id="findModelById" resultMap="admin" parameterType="int">
+        select * from admin where id = #{id}
+    </select>
+
+    <select id="findModelByNT" resultMap="admin" parameterType="String">
+        select * from admin where NT = #{NT}
+    </select>
+    <update id="updatePassword" parameterType="String">
+        UPDATE admin set password = #{password} where NT = #{NT}
+    </update>
+</mapper>
+

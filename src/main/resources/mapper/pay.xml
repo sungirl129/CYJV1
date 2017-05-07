@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.PayDao">
+    <resultMap id="pay" type="com.cyj.model.PayModel">
+        <id column="id" property="id"/>
+        <result column="order_id" property="orderId"/>
+        <result column="pay_money" property="payMoney"/>
+        <result column="pay_way" property="payWay"/>
+        <result column="handler" property="handler"/>
+        <result column="pay_date" property="payDate"/>
+    </resultMap>
+
+    <select id="viewPayInfoByOrderId" resultMap="pay" parameterType="int">
+        SELECT * FROM pay WHERE order_id = #{orderId}
+    </select>
+    <insert id="insertItem" parameterType="com.cyj.model.PayModel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pay (order_id,pay_money,pay_way,handler,pay_date)
+        VALUES (#{orderId},#{payMoney},#{payWay},#{handler},#{payDate})
+    </insert>
+</mapper>
+

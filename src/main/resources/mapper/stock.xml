@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.StockDao">
+    <resultMap id="stock" type="com.cyj.model.StockModel">
+        <id column="id" property="id"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="gname" property="gname"/>
+        <result column="now_number" property="nowNumber"/>
+        <result column="min_store" property="minStore"/>
+        <result column="max_store" property="maxStore"/>
+    </resultMap>
+    <select id="findStockModelByGoodsId" parameterType="int" resultMap="stock">
+        SELECT * FROM materialstock WHERE goods_id = #{id}
+    </select>
+</mapper>
+

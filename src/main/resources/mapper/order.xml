@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.OrderDao">
+    <resultMap id="order" type="com.cyj.model.OrderModel">
+        <id column="id" property="id"/>
+        <result column="application_id" property="applicationId"/>
+        <result column="valid_date" property="validDate"/>
+        <result column="accept_number" property="acceptNumber"/>
+        <result column="payed_money" property="payedMoney"/>
+        <result column="state" property="orderState"/>
+    </resultMap>
+
+    <select id="findModelById" resultMap="order" parameterType="int">
+        SELECT * FROM `purchasemanage`.`order` WHERE id = #{id}
+    </select>
+    <insert id="insertOrder" parameterType="com.cyj.model.OrderModel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `purchasemanage`.`order` (application_id,valid_date,accept_number,payed_money,state)
+        VALUES (#{applicationId},#{validDate},#{acceptNumber},#{payedMoney},#{orderState})
+    </insert>
+
+    <select id="getAllOrderByState" parameterType="int" resultMap="order">
+        SELECT * FROM `purchasemanage`.`order` WHERE state = #{state}
+    </select>
+
+    <select id="getOnePageOrderByState" resultMap="order">
+        SELECT * FROM `purchasemanage`.`order` WHERE state = #{state} limit #{offset}, #{pageSize}
+    </select>
+
+    <update id="updateAcceptNumber">
+        UPDATE `purchasemanage`.`order` SET accept_number = #{acceptNumber} WHERE id= #{id}
+    </update>
+
+    <update id="updatePayedMoney">
+        UPDATE `purchasemanage`.`order` SET payed_money = #{payedMoney} WHERE id = #{id}
+    </update>
+
+    <update id="updateState">
+        UPDATE `purchasemanage`.`order` SET state = #{state} WHERE id = #{id}
+    </update>
+
+    <select id="findModelByApplicationId" resultMap="order" parameterType="int">
+        SELECT * FROM `purchasemanage`.`order` WHERE application_id = #{applicationId}
+    </select>
+</mapper>
+

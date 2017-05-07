@@ -1,0 +1,606 @@
+package com.cyj.controller.admin;
+
+import com.cyj.model.*;
+import com.cyj.service.*;
+import com.cyj.tools.PageUtil;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.logging.Logger;
+
+/**
+ * Created by Administrator on 2017/4/3.
+ */
+@Controller
+@RequestMapping("/admin")
+
+public class AdminController {
+
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    @Resource
+    private StockService stockService;
+    @Resource
+    private MakePlanService makePlanService;
+    @Resource
+    private ScheduleService scheduleService;
+    @Resource
+    private PublishService publishService;
+    @Resource
+    private ApplicationService applicationService;
+    @Resource
+    private OrderService orderService;
+    @Resource
+    private SupplierService supplierService;
+    @Resource
+    private ArriveService arriveService;
+    @Resource
+    private PayService payService;
+    @Resource
+    private RejectedService rejectedService;
+    @Resource
+    private AdminService adminService;
+
+    @RequestMapping("/adminMain")
+    public String adminMain(Model model) {
+        return "admin/adminMain";
+    }
+
+    @RequestMapping("/adminTop")
+    public String adminTop(Model model) {
+        return "admin/adminTop";
+    }
+
+    @RequestMapping("/adminLeft")
+    public String adminLeft(Model model) {
+        return "admin/adminLeft";
+    }
+
+    @RequestMapping("/adminRight")
+    public String adminRight(Model model, HttpServletResponse response) throws IOException {
+        return "redirect:/admin/viewStock";
+    }
+
+    @RequestMapping("/viewStock")
+    public String viewStock(Model model, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo, HttpServletRequest request) {
+        int pageSize = 8;
+        PageUtil nowPage = stockService.getGoodsStockInfo(pageNo, pageSize);
+        nowPage.setRowNum(4);
+        model.addAttribute("nowPage", nowPage);
+        return "admin/stock/viewStock";
+    }
+
+    @RequestMapping("/search")
+    public String search(Model model, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo, String type, String condition, HttpServletRequest request) {
+        String stock = request.getParameter("stock");
+        boolean isStock = stock.equals("stock");//为true时有库存条件
+        int stockL = 0;
+        int stockR = 0;
+        if(isStock) {
+            stockL = Integer.parseInt(request.getParameter("stockL"));
+            stockR = Integer.parseInt(request.getParameter("stockR"));
+        }
+        int pageSize = 8;
+        PageUtil nowPage = null;
+        if(! isStock) {
+            if(type.equals("gname")) {
+                nowPage = stockService.searchGoodsStockByGname(pageNo, pageSize, condition);
+            } else if(type.equals("unit")) {
+                nowPage = stockService.searchGoodsStockByUnit(pageNo, pageSize, condition);
+            }
+        } else {
+            if(type.equals("gname")) {
+                nowPage = stockService.searchGoodsStockByGnameAndStock(pageNo, pageSize, condition,stockL,stockR);
+            } else if(type.equals("unit")) {
+                nowPage = stockService.searchGoodsStockByUnitAndStock(pageNo, pageSize, condition,stockL,stockR);
+            }
+        }
+        nowPage.setRowNum(4);
+        model.addAttribute("nowPage", nowPage);
+        return "admin/stock/search";
+    }
+
+    @RequestMapping("/makePurchasePlan")
+    public String makePurchasePlan(Model model, @RequestParam(value = "pageNum",defaultValue = "1",required = false) int pageNum, HttpServletRequest request) {
+        int pageSize = 8;
+        PageUtil nowPage = makePlanService.getGoodsStockInfo(pageNum,pageSize);
+        nowPage.setRowNum(4);
+        model.addAttribute("nowPage", nowPage);
+        return "admin/makePlan/makePurchasePlan";
+    }
+
+    @RequestMapping("/addPlan")
+    public void addPlan(Model model,int pageNum, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        boolean isHave = request.getParameterMap().containsKey("selectGoods");
+        if(isHave) {
+            String[] strGoodsId = request.getParameterValues("selectGoods");
+            boolean flag = true;
+            for(int i = 0; i < strGoodsId.length; i++) {
+                int goodsId = Integer.parseInt(strGoodsId[i]);
+                String strNumber = request.getParameter(strGoodsId[i]);
+                int buyNumber = Integer.parseInt(strNumber);
+                ScheduleModel scheduleModel = scheduleService.getUnpublishedModelByGoodsId(goodsId);
+                boolean sign;
+                if(scheduleModel != null) {
+                    sign = scheduleService.addBuyNumber(buyNumber,timestamp,scheduleModel);
+                } else {
+                    sign = scheduleService.insertSchedule(goodsId,buyNumber,timestamp);
+                }
+                flag = sign;
+            }
+//            if(flag)
+//                response.getWriter().write("<script language=\"javascript\">alert(\"操作成功!\");</script>");
+//            else
+//                response.getWriter().write("<script>alert('操作失败!');</script>");
+        }
+        response.sendRedirect("/admin/makePurchasePlan?pageNum="+ pageNum);
+    }
+
+    @RequestMapping("/goodsDetail")
+    public String goodsDetail(Model model, int gid) {
+        StockModel stockModel = stockService.findStockModelByGoodsId(gid);
+        GoodsModel goodsModel = stockService.findGoodsModelByGoodsId(gid);
+        model.addAttribute("stockModel",stockModel);
+        model.addAttribute("goodsModel",goodsModel);
+        return "admin/makePlan/goodsDetail";
+    }
+
+    @RequestMapping("/viewUnpostSchedule")
+    public String viewUnpostSchedule(Model model,@RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo) {
+        int pageSize = 8;
+        PageUtil nowPage = scheduleService.getOnePageValidUnpublish(0, 0, pageNo,pageSize);
+        nowPage.setRowNum(4);
+        model.addAttribute("nowPage", nowPage);
+        return "admin/viewUnpostSchedule";
+    }
+
+    @RequestMapping("/manageSchedule")
+    public String manageSchedule(Model model, int type, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo) {
+        int pageSize = 8;
+        PageUtil nowPage = null;
+        String title = "";
+        if(type == 0) {
+            nowPage = scheduleService.getOnePageValidUnpublish(0, 0, pageNo,pageSize);
+            nowPage.setRowNum(4);
+            model.addAttribute("nowPage", nowPage);
+            return "admin/viewUnpostSchedule";
+        } else if(type == 1) {
+            nowPage = scheduleService.getOnePageValidUnpublish(1, 1, pageNo,pageSize);
+            nowPage.setRowNum(4);
+            title = "已发布的计划";
+            model.addAttribute("nowPage", nowPage);
+            model.addAttribute("title", title);
+            return "admin/viewInvalidSchedule";
+        } else {
+            nowPage = scheduleService.getOnePageValidUnpublish(0, 1, pageNo,pageSize);
+            nowPage.setRowNum(4);
+            model.addAttribute("nowPage", nowPage);
+            title = "无效计划";
+            model.addAttribute("title", title);
+            return "admin/viewInvalidSchedule";
+        }
+    }
+
+    @Transactional
+    @RequestMapping("/processPublish")
+    public String processPublish(Model model, HttpServletRequest request) throws Exception {
+        String operation = request.getParameter("operation");
+        if(operation.equals("ok") || operation.equals("cancel")) {
+            //发布或者取消发布
+            if(request.getParameterMap().containsKey("selectPlans")) {
+                String[] strSchedulesId = request.getParameterValues("selectPlans");
+                if(operation.equals("ok")) {
+                    //发布
+                    for(int i = 0; i < strSchedulesId.length; i++) {
+                        int scheduleId = Integer.parseInt(strSchedulesId[i]);
+                        ScheduleModel scheduleModel = scheduleService.findModelById(scheduleId);
+                        int goodsId = scheduleModel.getGoodsId();
+                        String strBuyNumber = request.getParameter("bn" + strSchedulesId[i]);
+                        int buyNumber = Integer.parseInt(strBuyNumber);
+                        if(!scheduleService.publishChangeScheduleState(scheduleId)) throw new Exception("error");
+                        PublishModel publishModel = new PublishModel();
+                        publishModel.setScheduleId(scheduleId);
+                        publishModel.setGoodsId(goodsId);
+                        publishModel.setPublishNumber(buyNumber);
+                        publishModel.setApplyNumber(0);
+                        publishModel.setPublishState(0);
+                        if(!publishService.publishSchedule(publishModel)) throw new Exception("error");
+                    }
+                } else {
+                    //取消计划
+                    for(int i = 0; i < strSchedulesId.length; i++) {
+                        int scheduleId = Integer.parseInt(strSchedulesId[i]);
+                        scheduleService.cancelPublish(scheduleId);
+                    }
+                }
+            }
+        } else {
+            //修改计划个数
+            String strPlanId = request.getParameter("operation");
+            int scheduleId = Integer.parseInt(strPlanId);
+            String strBuyNumber = request.getParameter("bn" + strPlanId);
+            int buyNum = Integer.parseInt(strBuyNumber);
+            scheduleService.changeBuyNumber(buyNum,scheduleId);
+        }
+        return "redirect:/admin/viewUnpostSchedule";
+    }
+
+
+    @RequestMapping("/viewPublish")
+    public String viewPublish(Model model, @RequestParam(value = "pageNumber",defaultValue = "1",required = false) int pageNumber, @RequestParam(value = "type",defaultValue = "0",required = false)int type) {
+        String btnName = "取消发布";
+        String title = "正在发布的消息";
+        int state = 0;
+        if(type == 1) {
+            btnName = "发布";
+            title = "取消发布的消息";
+            state = 2;
+        }
+        int pageSize = 8;
+        PageUtil curPage = publishService.getOnePagePublishInfo(pageNumber,pageSize,state);
+        curPage.setRowNum(4);
+        model.addAttribute("curPage",curPage);
+        model.addAttribute("btnName",btnName);
+        model.addAttribute("type",type);
+        model.addAttribute("title", title);
+        return "admin/viewPublish";
+    }
+
+    @Transactional
+    @RequestMapping("/cancelPublish")
+    public String cancelPublish(Model model, int operation, int pageNumber, int type) throws Exception {
+        int publishId = operation;
+        if(type == 0) {
+            publishService.cacelPublish(publishId);
+        } else if(type == 1) {
+            PublishModel publishModel = publishService.findModelById(publishId);
+            publishModel.setPublishNumber(publishModel.getPublishNumber() - publishModel.getApplyNumber());
+            publishModel.setPublishState(0);
+            if(!publishService.publishSchedule(publishModel)) throw new Exception("error");
+            if(!publishService.deleteItem(publishId)) throw new Exception("error");
+        }
+        String url = "redirect:/admin/viewPublish?pageNumber=" + pageNumber;
+        return url;
+    }
+
+    @RequestMapping("/viewApplication")
+    public String viewApplication(Model model, @RequestParam(value = "pageNum",defaultValue = "1",required = false)int pageNum, @RequestParam(value = "type",defaultValue = "0",required = false)int type) {
+        int pageSize = 4;
+        PageUtil nowPage = null;
+        String title = "";
+        String url = "";
+        switch (type) {
+            case 0:
+                nowPage = applicationService.viewApplicationInfo(0, 0, pageNum,pageSize);
+                title = "暂未审核的申请单";
+                url = "admin/viewApplication";
+                break;
+            case 1:
+                nowPage = applicationService.viewApplicationInfo(1, 0, pageNum,pageSize);
+                title = "审核通过";
+                url = "admin/viewApplication1";
+                break;
+            case 2:
+                nowPage = applicationService.viewApplicationInfo(2, 0, pageNum,pageSize);
+                title = "审核不通过";
+                url = "admin/viewApplication1";
+                break;
+            default:
+                break;
+        }
+        nowPage.setRowNum(4);
+        model.addAttribute("nowPage", nowPage);
+        model.addAttribute("title", title);
+        model.addAttribute("type",type);
+        return url;
+    }
+
+    @RequestMapping("/processApplication")
+    @Transactional
+    public String processApplication(Model model, HttpServletRequest request, String access, String pageNum) throws Exception {
+        if(request.getParameterMap().containsKey("selectApplication")) {
+            String[] strApplicationsId = request.getParameterValues("selectApplication");
+            for(String strApplicationId:strApplicationsId) {
+                int applicationId = Integer.parseInt(strApplicationId);
+                if(access.equals("yes")) {
+                    //审批通过
+                    ApplicationModel applicationModel = applicationService.findModelById(applicationId);
+                    int supplyNumber = applicationModel.getSupplyNumber();
+                    int publishId = applicationModel.getPublishId();
+                   if(!applicationService.applicationAccess(applicationId)) throw new Exception("error1");
+                    OrderModel orderModel = new OrderModel();
+                    orderModel.setApplicationId(applicationId);
+                    orderModel.setAcceptNumber(0);
+                    orderModel.setPayedMoney(0);
+                    orderModel.setOrderState(0);
+                    if(!orderService.insertOrder(orderModel)) throw new Exception("error2");
+                    if(!publishService.addApplyNumber(supplyNumber, publishId)) throw new Exception("error3");
+                } else if(access.equals("no")) {
+                    applicationService.applicationDeny(applicationId);
+                }
+            }
+        }
+        return ("redirect:/admin/viewApplication?pageNum=" + pageNum);
+    }
+
+    @RequestMapping("/processingOrder")
+    public String processingOrder(Model model, @RequestParam(value = "pageNum",defaultValue = "1",required = false) int pageNum) {
+        int pageSize = 4;
+        PageUtil nowPage = orderService.viewOnePageOrderByState(pageNum,pageSize,0);
+        nowPage.setRowNum(4);
+        model.addAttribute("nowPage",nowPage);
+        return "admin/processingOrder";
+    }
+
+    @RequestMapping("/orderDetail")
+    public String orderDetail(Model model, int orderId) {
+        OrderModel orderModel = orderService.findModelById(orderId);
+        model.addAttribute("orderModel",orderModel);
+        int applicationId = orderModel.getApplicationId();
+        ApplicationModel applicationModel = applicationService.findModelById(applicationId);
+        model.addAttribute("applicationModel",applicationModel);
+        int supplierId = applicationModel.getSupplierId();
+        int publishId = applicationModel.getPublishId();
+        SupplierModel supplierModel = supplierService.findModelById(supplierId);
+        model.addAttribute("supplierModel",supplierModel);
+        PublishModel publishModel = publishService.findModelById(publishId);
+        int goodsId = publishModel.getGoodsId();
+        GoodsModel goodsModel = stockService.findGoodsModelByGoodsId(goodsId);
+        model.addAttribute("goodsModel", goodsModel);
+        PageUtil arrivePage = arriveService.viewArriveInfoByOrderId(orderId);
+        model.addAttribute("arrivePage", arrivePage);
+        PageUtil payPage = payService.viewPayInfoByOrderId(orderId);
+        model.addAttribute("payPage", payPage);
+        return "admin/orderDetail";
+    }
+
+    @Transactional
+    @RequestMapping("/goodsArrive")
+    public String goodsArrive(Model model, int orderId, int arriveNumber, int goodsState, int badNumber, int returnedQuantity) throws Exception {
+        ArriveModel arriveModel = new ArriveModel();
+        arriveModel.setOrderId(orderId);
+        arriveModel.setArriveNumber(arriveNumber);
+        arriveModel.setGoodsState(goodsState);
+        arriveModel.setBadNumber(badNumber);
+        if(!arriveService.insertArriveItem(arriveModel)) throw new Exception("error");
+        if(!orderService.goodsArriveChangeAcceptNumber(orderId, arriveNumber-badNumber)) throw new Exception("error");
+        if(goodsState == 2) {
+            RejectedModel rejectedModel = new RejectedModel();
+            rejectedModel.setArriveId(orderId);
+            rejectedModel.setReturnedQuantity(returnedQuantity);
+            if(!rejectedService.insertItem(rejectedModel)) throw new Exception("error");
+
+            int applicationId = orderService.getApplicationIdByOrderId(orderId);
+            int publishId = applicationService.getPublishIdById(applicationId);
+            if(!publishService.returnGoodsChangePulish(publishId,returnedQuantity)) throw new Exception("error");
+        }
+        String url = "/admin/orderDetail?orderId=" + orderId;
+        return url;
+    }
+
+    @Transactional
+    @RequestMapping("/goodsPay")
+    public String goodsPay(Model model, int orderId, double payMoney, int payWay, String handler) throws Exception {
+        PayModel payModel = new PayModel();
+        payModel.setOrderId(orderId);
+        payModel.setPayMoney(payMoney);
+        payModel.setPayWay(payWay);
+        payModel.setHandler(handler);
+        if(!payService.insetPayItem(payModel)) throw new Exception("error");
+        if(!orderService.changePayedMoney(orderId,payMoney)) throw new Exception("error");
+        if(orderService.SupplyNumberEqualsArriveNumber(orderId)) {
+            if(orderService.checkPayedMoney(orderId)) {
+                orderService.changeOrderState(orderId,1);
+            }
+        }
+        String url = "/admin/orderDetail?orderId=" + orderId;
+        return url;
+    }
+
+    @RequestMapping("/historyOrder")
+    public String historyOrder(Model model, @RequestParam(value = "pageNum",defaultValue = "1",required = false) int pageNum) {
+        int pageSize = 4;
+        PageUtil nowPage = orderService.viewOnePageOrderByState(pageNum, pageSize,1);
+        nowPage.setRowNum(4);
+        model.addAttribute("nowPage",nowPage);
+        return "admin/historyOrder";
+    }
+
+    @RequestMapping("/manageSuppliers")
+    public String manageSuppliers(Model model, @RequestParam(value = "pageNo",defaultValue = "1",required = false)int pageNo) {
+        int pageSize = 15;
+        PageUtil nowPage = supplierService.getOnePageSupplierInfo(pageNo,pageSize);
+        model.addAttribute("nowPage",nowPage);
+        return "admin/manageSuppliers";
+    }
+
+    @RequestMapping("/deleteSuppliers")
+    public String deleteSuppliers(Model model, HttpServletRequest request) {
+        if(request.getParameterMap().containsKey("supplierId")) {
+            String[] strIds = request.getParameterValues("supplierId");
+            for(String strid : strIds) {
+                int id = Integer.parseInt(strid);
+                supplierService.deleteSupplier(id);
+            }
+        }
+        return "redirect:/admin/manageSuppliers";
+    }
+
+    @RequestMapping("/modifyModal")
+    public String modifyModal(Model model, int id) {
+        SupplierModel supplierModel = supplierService.findModelById(id);
+        model.addAttribute("supplierModel", supplierModel);
+        return "admin/modifyModal";
+    }
+
+
+    @RequestMapping("/modifySupplier")
+    public String modifySupplier(Model model, int id, HttpServletRequest request) {
+        SupplierModel supplierModel = new SupplierModel();
+        supplierModel.setId(id);
+        supplierModel.setUsername(request.getParameter("username"));
+        supplierModel.setPassword(request.getParameter("password"));
+        supplierModel.setCorporation(request.getParameter("corporation"));
+        supplierModel.setAddress(request.getParameter("address"));
+        supplierModel.setName(request.getParameter("name"));
+        supplierModel.setTel(request.getParameter("tel"));
+        supplierModel.setEmail(request.getParameter("email"));
+        supplierModel.setCredit(Integer.parseInt(request.getParameter("credit")));
+        supplierService.modifySupplier(supplierModel);
+        return "redirect:/admin/manageSuppliers";
+    }
+
+    @RequestMapping("/addSupplier")
+    public String addSupplier(Model model, HttpServletRequest request) {
+        SupplierModel supplierModel = new SupplierModel();
+        supplierModel.setUsername(request.getParameter("username"));
+        supplierModel.setPassword(request.getParameter("password"));
+        supplierModel.setCorporation(request.getParameter("corporation"));
+        supplierModel.setAddress(request.getParameter("address"));
+        supplierModel.setName(request.getParameter("name"));
+        supplierModel.setTel(request.getParameter("tel"));
+        supplierModel.setEmail(request.getParameter("email"));
+        supplierModel.setCredit(0);
+        supplierService.insertSupplier(supplierModel);
+        return "redirect:/admin/manageSuppliers";
+    }
+
+    @RequestMapping("/modifyAdmin")
+    public String modifyAdmin(Model model) {
+        return "admin/modifyAdmin";
+    }
+
+    @RequestMapping("/modifyAdminVerify")
+    public String modifyAdminVerify(Model model, String oldPassword, String newPassword, String newPassword1, HttpServletRequest request) {
+        String error = "";
+        AdminModel adminModel = (AdminModel) request.getSession().getAttribute("admin");
+        if(! newPassword1.equals(newPassword)) {
+            error = "两次密码不一致!请重新输入。";
+        } else if(!adminModel.getPassword().equals(oldPassword)){
+            error = "密码错误";
+        } else {
+            if(!adminService.changePassword(newPassword, adminModel)) {
+                error = "修改密码失败";
+            } else {
+                error = "修改成功";
+            }
+        }
+        model.addAttribute("result", error);
+        return "admin/modifyAdminVerify";
+    }
+
+    @RequestMapping("/adminExit")
+    public String adminExit(Model model, HttpServletRequest request) {
+        request.getSession().removeAttribute("admin");
+        return "index";
+    }
+
+    @RequestMapping("/viewStatistics")
+    public String viewStatistics(Model model) {
+        return "admin/viewStatistics";
+    }
+
+    @RequestMapping("/statistics")
+    public String statistics(Model model) {
+        return "admin/statistics";
+    }
+
+    @RequestMapping("/pie")
+    public String pie(Model model, String gname, int year, String style) {
+        model.addAttribute("gname", gname);
+        int goodsId = stockService.findGoodsIdByGname(gname);
+        int[] number = scheduleService.viewScheduleByGnameYear(goodsId, year);
+        model.addAttribute("number", number);
+        if(style.equals("bar")) {
+            return "admin/bar";
+        } else if(style.equals("line")) {
+            return "admin/line";
+        } else {
+            return "admin/viewStatistics";
+        }
+    }
+
+    @RequestMapping("/viewRate")
+    public String viewRate(Model model) {
+        return "admin/viewRate";
+    }
+
+    @RequestMapping("/secondType")
+    public String secondType(Model model, String gname, int year, String style) {
+        model.addAttribute("gname", gname);
+        int goodsId = stockService.findGoodsIdByGname(gname);
+       // int[] number = publishService.viewRateByGnameYear(goodsId, year);
+        int[] number = new int[12];
+        number[0] = number[1] = number[2] = number[3] = 10;
+        number[4] = number[5] = number[6] = number[7] = 12;
+        number[8] = number[9] = number[10] = number[11] = 10;
+        int[] season = new int[4];
+        for(int i = 0; i < 4; i++) {
+            season[i] = number[i * 3] + number[i * 3 + 1] + number[i * 3 + 2];
+        }
+        model.addAttribute("season", season);
+        if(style.equals("pie")) {
+            return "admin/pie";
+        } else if(style.equals("doughnut")) {
+            return "admin/doughnut";
+        } else {
+            return "admin/viewStatistics";
+        }
+
+    }
+
+
+
+
+//    @RequestMapping("/statistics")
+//    public String statistics(Model model) {
+//        return "admin/statistics";
+//    }
+//
+//    @RequestMapping("/pie")
+//    public String pie(Model model) {
+//        return "admin/doughnut";
+//    }
+//
+//    @RequestMapping(value = "/pieData",produces = "text/html;charset=UTF-8")
+//    public @ResponseBody
+//    String pieData(
+//            @RequestParam(required = false,defaultValue = "") String condition,
+//            @RequestParam(required = false,defaultValue = "0") int year){
+//        logger.info("condition:"+condition);
+//        logger.info("year:"+year);
+//        // 可以在此处做查询
+//
+//        //此处假设有A、B、C、D、E五种货物，各占25
+//        Gson gson = new Gson();
+//        Map<String,Integer> data = new HashMap<String, Integer>();
+//        Map<String,Object> result = new HashMap<String, Object>();
+//        result.put("data",data);
+//        result.put("title","饼图");
+//        data.put("A",25);
+//        data.put("B",25);
+//        data.put("C",25);
+//        data.put("D",25);
+//        data.put("E",25);
+//        String resultString = gson.toJson(result);
+//        logger.info("result:"+ resultString);
+//        return resultString;
+//    }
+
+
+    @RequestMapping("/predict")
+    public String predict(Model model) {
+
+        return "admin/predict/predict";
+    }
+
+}
+

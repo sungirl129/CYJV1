@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.SupplierDao">
+    <resultMap id="supplier" type="com.cyj.model.SupplierModel">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="corporation" property="corporation"/>
+        <result column="address" property="address"/>
+        <result column="name" property="name"/>
+        <result column="tel" property="tel"/>
+        <result column="email" property="email"/>
+        <result column="credit" property="credit"/>
+    </resultMap>
+    <select id="findModelById" resultMap="supplier" parameterType="int">
+        select * from supplier where id = #{id}
+    </select>
+
+    <select id="findModelByUsername" resultMap="supplier" parameterType="String">
+        select * from supplier where username = #{username}
+    </select>
+
+    <insert id="insertSupplier" parameterType="com.cyj.model.SupplierModel" useGeneratedKeys="true" keyProperty="id">
+        insert into supplier (corporation,address,name,tel,email,username,password,credit)
+        values (#{corporation},#{address},#{name},#{tel},#{email},#{username},#{password},#{credit})
+    </insert>
+    <select id="getAllSupplier" resultMap="supplier">
+        select * from supplier
+    </select>
+
+    <select id="getOnePageSupplier" parameterType="int" resultMap="supplier">
+        select * from supplier limit #{offset}, #{pageSize}
+    </select>
+
+    <update id="updateSupplier" parameterType="com.cyj.model.SupplierModel">
+        UPDATE supplier set corporation = #{corporation},address = #{address},name = #{name},tel = #{tel},email = #{email},username = #{username},password = #{password},credit = #{credit} where id = #{id}
+    </update>
+
+    <delete id="deleteSupplier" parameterType="int">
+        DELETE FROM supplier WHERE id = #{id}
+    </delete>
+
+    <update id="updatePassword">
+        UPDATE supplier set password = #{password} where id = #{id}
+    </update>
+</mapper>
+

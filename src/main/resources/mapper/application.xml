@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.ApplicationDao">
+    <resultMap id="application" type="com.cyj.model.ApplicationModel">
+        <id column="id" property="id"/>
+        <result column="publish_id" property="publishId"/>
+        <result column="schedule_id" property="scheduleId"/>
+        <result column="supplier_id" property="supplierId"/>
+        <result column="supply_number" property="supplyNumber"/>
+        <result column="price" property="price"/>
+        <result column="valid" property="valid"/>
+        <result column="state" property="applicationState"/>
+        <result column="date" property="applicationDate"/>
+    </resultMap>
+
+    <select id="findModelById" parameterType="int" resultMap="application">
+        SELECT * FROM application WHERE id = #{id}
+    </select>
+    <select id="getApplicationTotalCountByValidAndState" parameterType="int" resultMap="application">
+        SELECT * FROM application WHERE valid = #{valid} AND state = #{state}
+    </select>
+
+    <select id="getOnePageUncheckedApplication" resultMap="application">
+        SELECT * FROM application WHERE valid = #{valid} AND state = #{state} limit #{offset}, #{pageSize}
+    </select>
+
+    <update id="setValid" parameterType="int">
+        UPDATE application SET valid = #{valid} WHERE id = #{id}
+    </update>
+
+    <insert id="insertItem" parameterType="com.cyj.model.ApplicationModel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO application (publish_id,schedule_id,supplier_id,supply_number,price,valid,state,date)
+        VALUES (#{publishId}, #{scheduleId}, #{supplierId}, #{supplyNumber}, #{price}, #{valid}, #{applicationState}, #{applicationDate})
+    </insert>
+
+    <select id="viewMyApplicationByState" parameterType="int" resultMap="application">
+        SELECT * FROM application WHERE supplier_id = #{supplierId} AND state = #{state}
+    </select>
+
+    <select id="viewOnePageMyApplicationByState" parameterType="int" resultMap="application">
+        SELECT * FROM application WHERE supplier_id = #{supplierId} AND state = #{state} limit #{offset}, #{pageSize}
+    </select>
+    <select id="getItemBySupplierIdAndValid" resultMap="application">
+        SELECT * FROM application WHERE (supplier_id = #{supplierId} AND valid = #{valid} AND state = 0)
+    </select>
+</mapper>
+
