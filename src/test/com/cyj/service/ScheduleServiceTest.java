@@ -17,10 +17,10 @@ public class ScheduleServiceTest {
     private ScheduleService scheduleService;
     @Test
     public void viewScheduleByGnameYear() throws Exception {
-        int[] num = scheduleService.viewScheduleByGnameYear(4,2017);
-        for(int i = 0; i < 12; i++) {
-            System.out.println(num[i]);
-        }
+//      //  int[] num = scheduleService.viewScheduleByGnameYear(4,2017);
+//        for(int i = 0; i < 12; i++) {
+//            System.out.println(num[i]);
+//        }
     }
 
 }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.StatisticsDao">
+    <resultMap id="statistics" type="com.cyj.model.StatisticsModel">
+        <id column="id" property="id"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="year" property="year"/>
+        <result column="month" property="month"/>
+        <result column="purchase_number" property="purchaseNumber"/>
+        <result column="apply_number" property="applyNumber"/>
+        <result column="state" property="state"/>
+    </resultMap>
+    <select id="findModelById" resultMap="statistics" parameterType="int">
+        select * from statistics where id = #{id}
+    </select>
+
+    <insert id="insertItem" parameterType="com.cyj.model.StatisticsModel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO statisics (goods_id, year, month, purchase_number, apply_number, state)
+        VALUES (#{goodsId}, #{year}, #{month}, #{purchaseNumber}, #{applyNumber}, #{state})
+    </insert>
+
+    <select id="findModelByGoodsIdAndTime" parameterType="int" resultMap="statistics">
+        SELECT * FROM statistics WHERE goods_id = #{gid} AND year = #{year} AND month = #{month}
+    </select>
+
+    <update id="updatePurchaseNumber" parameterType="int">
+        UPDATE statistics SET purchase_number = #{purchaseNumber} WHERE id = #{id}
+    </update>
+
+    <update id="updateApplyNumber" parameterType="int">
+        UPDATE statistics SET apply_number = #{applyNumber} WHERE id = #{id}
+    </update>
+
+    <select id="getModelsByGidAndYear" parameterType="int" resultMap="statistics">
+        SELECT * FROM statistics WHERE goods_id = #{gid} AND year = #{year}
+    </select>
+</mapper>
+

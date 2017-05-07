@@ -38,7 +38,10 @@
     </select>
 
     <update id="publishChangeScheduleState" parameterType="int">
-        UPDATE schedule SET is_publish=1,state=1 WHERE id=#{id}
+        UPDATE schedule SET is_publish=1,state=1 WHERE id = #{scheduleId}
+    </update>
+    <update id="addPublishDate" parameterType="int">
+        UPDATE schedule SET publish_date = #{publishDate} WHERE id = #{id}
     </update>
     <update id="cancelPublish" parameterType="int">
         UPDATE schedule SET state = 0 WHERE id = #{scheduleId}

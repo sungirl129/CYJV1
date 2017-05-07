@@ -16,7 +16,8 @@ public interface ScheduleDao {
     int insertScheduleModel(ScheduleModel scheduleModel);
     List<ScheduleModel> getUnpublishScheduleTotalCount(@Param("isPublish")int isPublish, @Param("state")int state);
     List<ScheduleModel> getOnePageUnpublish(@Param("isPublish") int isPublish, @Param("state") int state, @Param("offset") int offset, @Param("pageSize") int pageSize);
-    int publishChangeScheduleState(int scheduleId);
+    int publishChangeScheduleState(@Param("scheduleId")int scheduleId);
+    int addPublishDate(@Param("publishDate")Timestamp publishDate, @Param("id")int id);
     int cancelPublish(int scheduleId);
     List<ScheduleModel> viewScheduleByGnameYear(@Param("goodsId") int goodsId, @Param("year1")int year1);
 }

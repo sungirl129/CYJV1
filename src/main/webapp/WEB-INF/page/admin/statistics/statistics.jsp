@@ -76,7 +76,7 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form action="/admin/pie" class="navbar-form navbar-left" target="context">
+            <form action="/admin/chooseType" class="navbar-form navbar-left" target="context">
                 <div class="form-group">
                     <select name="type" class="form-control">
                         <option value="gname" selected="selected">货物名称</option>
@@ -97,6 +97,8 @@
                     <select name="style" class="form-control">
                         <option value="bar" selected="selected">条形图</option>
                         <option value="line">折线图</option>
+                        <option value="pie">饼图</option>
+                        <option value="huan">环图</option>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-default">查看</button>
@@ -104,7 +106,6 @@
         </div>
     </div>
 </nav>
-
 <iframe src="/admin/viewStatistics" width="100%" height="90%" name="context"></iframe>
 </body>
 </html>

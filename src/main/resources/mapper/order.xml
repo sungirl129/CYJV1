@@ -7,6 +7,8 @@
     <resultMap id="order" type="com.cyj.model.OrderModel">
         <id column="id" property="id"/>
         <result column="application_id" property="applicationId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="supplier_id" property="supplierId"/>
         <result column="valid_date" property="validDate"/>
         <result column="accept_number" property="acceptNumber"/>
         <result column="payed_money" property="payedMoney"/>

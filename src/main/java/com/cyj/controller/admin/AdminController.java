@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Calendar;
 import java.util.logging.Logger;
 
 /**
@@ -57,6 +58,8 @@ public class AdminController {
     private RejectedService rejectedService;
     @Resource
     private AdminService adminService;
+    @Resource
+    private StatisticsService statisticsService;
 
     @RequestMapping("/adminMain")
     public String adminMain(Model model) {
@@ -178,7 +181,7 @@ public class AdminController {
         PageUtil nowPage = scheduleService.getOnePageValidUnpublish(0, 0, pageNo,pageSize);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage", nowPage);
-        return "admin/viewUnpostSchedule";
+        return "admin/schedule/viewUnpostSchedule";
     }
 
     @RequestMapping("/manageSchedule")
@@ -190,21 +193,21 @@ public class AdminController {
             nowPage = scheduleService.getOnePageValidUnpublish(0, 0, pageNo,pageSize);
             nowPage.setRowNum(4);
             model.addAttribute("nowPage", nowPage);
-            return "admin/viewUnpostSchedule";
+            return "admin/schedule/viewUnpostSchedule";
         } else if(type == 1) {
             nowPage = scheduleService.getOnePageValidUnpublish(1, 1, pageNo,pageSize);
             nowPage.setRowNum(4);
             title = "已发布的计划";
             model.addAttribute("nowPage", nowPage);
             model.addAttribute("title", title);
-            return "admin/viewInvalidSchedule";
+            return "admin/schedule/viewPostedSchedule";
         } else {
             nowPage = scheduleService.getOnePageValidUnpublish(0, 1, pageNo,pageSize);
             nowPage.setRowNum(4);
             model.addAttribute("nowPage", nowPage);
             title = "无效计划";
             model.addAttribute("title", title);
-            return "admin/viewInvalidSchedule";
+            return "admin/schedule/viewInvalidSchedule";
         }
     }
 
@@ -225,6 +228,7 @@ public class AdminController {
                         String strBuyNumber = request.getParameter("bn" + strSchedulesId[i]);
                         int buyNumber = Integer.parseInt(strBuyNumber);
                         if(!scheduleService.publishChangeScheduleState(scheduleId)) throw new Exception("error");
+                        if(! scheduleService.addPublishDate(scheduleId)) throw new Exception("error1");
                         PublishModel publishModel = new PublishModel();
                         publishModel.setScheduleId(scheduleId);
                         publishModel.setGoodsId(goodsId);
@@ -232,6 +236,7 @@ public class AdminController {
                         publishModel.setApplyNumber(0);
                         publishModel.setPublishState(0);
                         if(!publishService.publishSchedule(publishModel)) throw new Exception("error");
+                        statisticsService.insertPurchaseNumber(goodsId, buyNumber);
                     }
                 } else {
                     //取消计划
@@ -256,7 +261,7 @@ public class AdminController {
     @RequestMapping("/viewPublish")
     public String viewPublish(Model model, @RequestParam(value = "pageNumber",defaultValue = "1",required = false) int pageNumber, @RequestParam(value = "type",defaultValue = "0",required = false)int type) {
         String btnName = "取消发布";
-        String title = "正在发布的消息";
+        String title = "发布的采购信息";
         int state = 0;
         if(type == 1) {
             btnName = "发布";
@@ -270,7 +275,7 @@ public class AdminController {
         model.addAttribute("btnName",btnName);
         model.addAttribute("type",type);
         model.addAttribute("title", title);
-        return "admin/viewPublish";
+        return "admin/publish/viewPublish";
     }
 
     @Transactional
@@ -282,6 +287,7 @@ public class AdminController {
         } else if(type == 1) {
             PublishModel publishModel = publishService.findModelById(publishId);
             publishModel.setPublishNumber(publishModel.getPublishNumber() - publishModel.getApplyNumber());
+            publishModel.setApplyNumber(0);
             publishModel.setPublishState(0);
             if(!publishService.publishSchedule(publishModel)) throw new Exception("error");
             if(!publishService.deleteItem(publishId)) throw new Exception("error");
@@ -300,17 +306,17 @@ public class AdminController {
             case 0:
                 nowPage = applicationService.viewApplicationInfo(0, 0, pageNum,pageSize);
                 title = "暂未审核的申请单";
-                url = "admin/viewApplication";
+                url = "admin/application/viewApplication";
                 break;
             case 1:
                 nowPage = applicationService.viewApplicationInfo(1, 0, pageNum,pageSize);
                 title = "审核通过";
-                url = "admin/viewApplication1";
+                url = "admin/application/viewApplication1";
                 break;
             case 2:
                 nowPage = applicationService.viewApplicationInfo(2, 0, pageNum,pageSize);
                 title = "审核不通过";
-                url = "admin/viewApplication1";
+                url = "admin/application/viewApplication1";
                 break;
             default:
                 break;
@@ -334,9 +340,13 @@ public class AdminController {
                     ApplicationModel applicationModel = applicationService.findModelById(applicationId);
                     int supplyNumber = applicationModel.getSupplyNumber();
                     int publishId = applicationModel.getPublishId();
+                    int goodsId = applicationModel.getGoodsId();
+                    int supplierId = applicationModel.getSupplierId();
                    if(!applicationService.applicationAccess(applicationId)) throw new Exception("error1");
                     OrderModel orderModel = new OrderModel();
                     orderModel.setApplicationId(applicationId);
+                    orderModel.setGoodsId(goodsId);
+                    orderModel.setSupplierId(supplierId);
                     orderModel.setAcceptNumber(0);
                     orderModel.setPayedMoney(0);
                     orderModel.setOrderState(0);
@@ -356,7 +366,7 @@ public class AdminController {
         PageUtil nowPage = orderService.viewOnePageOrderByState(pageNum,pageSize,0);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);
-        return "admin/processingOrder";
+        return "admin/order/processingOrder";
     }
 
     @RequestMapping("/orderDetail")
@@ -378,7 +388,7 @@ public class AdminController {
         model.addAttribute("arrivePage", arrivePage);
         PageUtil payPage = payService.viewPayInfoByOrderId(orderId);
         model.addAttribute("payPage", payPage);
-        return "admin/orderDetail";
+        return "admin/order/orderDetail";
     }
 
     @Transactional
@@ -418,6 +428,13 @@ public class AdminController {
         if(orderService.SupplyNumberEqualsArriveNumber(orderId)) {
             if(orderService.checkPayedMoney(orderId)) {
                 orderService.changeOrderState(orderId,1);
+                OrderModel orderModel = orderService.findModelById(orderId);
+                int acceptNumber = orderModel.getAcceptNumber();
+                int goodsId = orderModel.getGoodsId();
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                statisticsService.updateInNumber(acceptNumber, goodsId, year, month);
             }
         }
         String url = "/admin/orderDetail?orderId=" + orderId;
@@ -524,57 +541,51 @@ public class AdminController {
 
     @RequestMapping("/viewStatistics")
     public String viewStatistics(Model model) {
-        return "admin/viewStatistics";
+        return "admin/statistics/viewStatistics";
     }
 
     @RequestMapping("/statistics")
     public String statistics(Model model) {
-        return "admin/statistics";
+        return "admin/statistics/statistics";
     }
 
-    @RequestMapping("/pie")
-    public String pie(Model model, String gname, int year, String style) {
+    @RequestMapping("/chooseType")
+    public String chooseType(Model model, String gname, int year, String style) {
         model.addAttribute("gname", gname);
         int goodsId = stockService.findGoodsIdByGname(gname);
-        int[] number = scheduleService.viewScheduleByGnameYear(goodsId, year);
-        model.addAttribute("number", number);
-        if(style.equals("bar")) {
-            return "admin/bar";
-        } else if(style.equals("line")) {
-            return "admin/line";
-        } else {
-            return "admin/viewStatistics";
+        int[] month = statisticsService.statisticsGoodsByYear(goodsId, year);
+        int[] purchaseNumber = new int[12];
+        int[] applyNumber = new int[12];
+        for(int i = 0; i < 12; i++) {
+            purchaseNumber[i] = month[i * 2];
+            applyNumber[i] = month[i * 2 + 1];
         }
-    }
-
-    @RequestMapping("/viewRate")
-    public String viewRate(Model model) {
-        return "admin/viewRate";
-    }
-
-    @RequestMapping("/secondType")
-    public String secondType(Model model, String gname, int year, String style) {
-        model.addAttribute("gname", gname);
-        int goodsId = stockService.findGoodsIdByGname(gname);
-       // int[] number = publishService.viewRateByGnameYear(goodsId, year);
-        int[] number = new int[12];
-        number[0] = number[1] = number[2] = number[3] = 10;
-        number[4] = number[5] = number[6] = number[7] = 12;
-        number[8] = number[9] = number[10] = number[11] = 10;
+        model.addAttribute("purchaseNumber", purchaseNumber);
+        model.addAttribute("applyNumber", applyNumber);
+        model.addAttribute("purchaseNumber", purchaseNumber);
+        model.addAttribute("applyNumber", applyNumber);
         int[] season = new int[4];
+        int[] season1 = new int[4];
         for(int i = 0; i < 4; i++) {
-            season[i] = number[i * 3] + number[i * 3 + 1] + number[i * 3 + 2];
+            season[i] = purchaseNumber[i * 3] + purchaseNumber[i * 3 + 1] + purchaseNumber[i * 3 + 2];
+            season1[i] = applyNumber[i * 3] + applyNumber[i * 3 + 1] + applyNumber[i * 3 + 2];
         }
         model.addAttribute("season", season);
-        if(style.equals("pie")) {
-            return "admin/pie";
-        } else if(style.equals("doughnut")) {
-            return "admin/doughnut";
-        } else {
-            return "admin/viewStatistics";
-        }
+        model.addAttribute("season1", season1);
 
+        if(style.equals("bar")) {
+            return "admin/statistics/bar";
+        } else if(style.equals("line")) {
+            return "admin/statistics/line";
+        } else if(style.equals("pie")) {
+            return "admin/statistics/pie";
+        } else if(style.equals("huan")) {
+            return "admin/statistics/doughnut";
+        } else {
+            return "admin/statistics/viewStatistics";
+        }
     }
+
 
 
 

@@ -9,6 +9,7 @@
         <result column="publish_id" property="publishId"/>
         <result column="schedule_id" property="scheduleId"/>
         <result column="supplier_id" property="supplierId"/>
+        <result column="goods_id" property="goodsId"/>
         <result column="supply_number" property="supplyNumber"/>
         <result column="price" property="price"/>
         <result column="valid" property="valid"/>

@@ -8,10 +8,28 @@ import java.sql.Timestamp;
 public class OrderModel {
     private int id;
     private int applicationId;
+    private int goodsId;
+    private int supplierId;
     private Timestamp validDate;
     private int acceptNumber;
     private double payedMoney;
     private int orderState;
+
+    public int getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(int goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public int getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(int supplierId) {
+        this.supplierId = supplierId;
+    }
 
     public int getId() {
         return id;

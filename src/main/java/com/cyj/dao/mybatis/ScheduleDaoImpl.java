@@ -41,8 +41,12 @@ public class ScheduleDaoImpl implements ScheduleDao{
         return sqlSession.getMapper(ScheduleDao.class).getOnePageUnpublish(isPublish, state, offset, pageSize);
     }
 
-    public int publishChangeScheduleState(int scheduleId) {
+    public int publishChangeScheduleState(@Param("scheduleId") int scheduleId) {
         return sqlSession.getMapper(ScheduleDao.class).publishChangeScheduleState(scheduleId);
+    }
+
+    public int addPublishDate(@Param("publishDate") Timestamp publishDate, @Param("id") int id) {
+        return sqlSession.getMapper(ScheduleDao.class).addPublishDate(publishDate, id);
     }
 
     public int cancelPublish(int scheduleId) {
