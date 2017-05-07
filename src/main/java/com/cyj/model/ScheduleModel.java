@@ -12,6 +12,7 @@ public class ScheduleModel {
     private int isPublish;
     private int scheduleState;
     private Timestamp scheduleDate;
+    private Timestamp publishDate;
 
     public int getId() {
         return id;
@@ -59,5 +60,13 @@ public class ScheduleModel {
 
     public void setScheduleDate(Timestamp scheduleDate) {
         this.scheduleDate = scheduleDate;
+    }
+
+    public Timestamp getPublishDate() {
+        return publishDate;
+    }
+
+    public void setPublishDate(Timestamp publishDate) {
+        this.publishDate = publishDate;
     }
 }

@@ -81,6 +81,11 @@ public class ScheduleService {
         return (scheduleDao.publishChangeScheduleState(scheduleId) == 1);
     }
 
+    public boolean addPublishDate(int scheduleId) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        return (scheduleDao.addPublishDate(timestamp, scheduleId) == 1);
+    }
+
     //计划单修改buy_number
     public boolean changeBuyNumber(int buyNum, int planId) {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());

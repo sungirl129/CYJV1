@@ -159,7 +159,7 @@ public class AdminController {
         PageUtil nowPage = scheduleService.getOnePageValidUnpublish(0, 0, pageNo,pageSize);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage", nowPage);
-        return "admin/viewUnpostSchedule";
+        return "admin/schedule/viewUnpostSchedule";
     }
 
     @RequestMapping("/manageSchedule")
@@ -171,21 +171,21 @@ public class AdminController {
             nowPage = scheduleService.getOnePageValidUnpublish(0, 0, pageNo,pageSize);
             nowPage.setRowNum(4);
             model.addAttribute("nowPage", nowPage);
-            return "admin/viewUnpostSchedule";
+            return "admin/schedule/viewUnpostSchedule";
         } else if(type == 1) {
             nowPage = scheduleService.getOnePageValidUnpublish(1, 1, pageNo,pageSize);
             nowPage.setRowNum(4);
             title = "已发布的计划";
             model.addAttribute("nowPage", nowPage);
             model.addAttribute("title", title);
-            return "admin/viewInvalidSchedule";
+            return "admin/schedule/viewPostedSchedule";
         } else {
             nowPage = scheduleService.getOnePageValidUnpublish(0, 1, pageNo,pageSize);
             nowPage.setRowNum(4);
             model.addAttribute("nowPage", nowPage);
             title = "无效计划";
             model.addAttribute("title", title);
-            return "admin/viewInvalidSchedule";
+            return "admin/schedule/viewInvalidSchedule";
         }
     }
 
@@ -206,6 +206,7 @@ public class AdminController {
                         String strBuyNumber = request.getParameter("bn" + strSchedulesId[i]);
                         int buyNumber = Integer.parseInt(strBuyNumber);
                         if(!scheduleService.publishChangeScheduleState(scheduleId)) throw new Exception("error");
+                        if(! scheduleService.addPublishDate(scheduleId)) throw new Exception("error1");
                         PublishModel publishModel = new PublishModel();
                         publishModel.setScheduleId(scheduleId);
                         publishModel.setGoodsId(goodsId);
@@ -237,7 +238,7 @@ public class AdminController {
     @RequestMapping("/viewPublish")
     public String viewPublish(Model model, @RequestParam(value = "pageNumber",defaultValue = "1",required = false) int pageNumber, @RequestParam(value = "type",defaultValue = "0",required = false)int type) {
         String btnName = "取消发布";
-        String title = "正在发布的消息";
+        String title = "发布的采购信息";
         int state = 0;
         if(type == 1) {
             btnName = "发布";
@@ -251,7 +252,7 @@ public class AdminController {
         model.addAttribute("btnName",btnName);
         model.addAttribute("type",type);
         model.addAttribute("title", title);
-        return "admin/viewPublish";
+        return "admin/publish/viewPublish";
     }
 
     @Transactional
@@ -263,6 +264,7 @@ public class AdminController {
         } else if(type == 1) {
             PublishModel publishModel = publishService.findModelById(publishId);
             publishModel.setPublishNumber(publishModel.getPublishNumber() - publishModel.getApplyNumber());
+            publishModel.setApplyNumber(0);
             publishModel.setPublishState(0);
             if(!publishService.publishSchedule(publishModel)) throw new Exception("error");
             if(!publishService.deleteItem(publishId)) throw new Exception("error");
@@ -281,17 +283,17 @@ public class AdminController {
             case 0:
                 nowPage = applicationService.viewApplicationInfo(0, 0, pageNum,pageSize);
                 title = "暂未审核的申请单";
-                url = "admin/viewApplication";
+                url = "admin/application/viewApplication";
                 break;
             case 1:
                 nowPage = applicationService.viewApplicationInfo(1, 0, pageNum,pageSize);
                 title = "审核通过";
-                url = "admin/viewApplication1";
+                url = "admin/application/viewApplication1";
                 break;
             case 2:
                 nowPage = applicationService.viewApplicationInfo(2, 0, pageNum,pageSize);
                 title = "审核不通过";
-                url = "admin/viewApplication1";
+                url = "admin/application/viewApplication1";
                 break;
             default:
                 break;
@@ -337,7 +339,7 @@ public class AdminController {
         PageUtil nowPage = orderService.viewOnePageOrderByState(pageNum,pageSize,0);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);
-        return "admin/processingOrder";
+        return "admin/order/processingOrder";
     }
 
     @RequestMapping("/orderDetail")
@@ -359,7 +361,7 @@ public class AdminController {
         model.addAttribute("arrivePage", arrivePage);
         PageUtil payPage = payService.viewPayInfoByOrderId(orderId);
         model.addAttribute("payPage", payPage);
-        return "admin/orderDetail";
+        return "admin/order/orderDetail";
     }
 
     @Transactional
@@ -505,12 +507,12 @@ public class AdminController {
 
     @RequestMapping("/viewStatistics")
     public String viewStatistics(Model model) {
-        return "admin/viewStatistics";
+        return "admin/statistics/viewStatistics";
     }
 
     @RequestMapping("/statistics")
     public String statistics(Model model) {
-        return "admin/statistics";
+        return "admin/statistics/statistics";
     }
 
     @RequestMapping("/pie")
@@ -520,17 +522,17 @@ public class AdminController {
         int[] number = scheduleService.viewScheduleByGnameYear(goodsId, year);
         model.addAttribute("number", number);
         if(style.equals("bar")) {
-            return "admin/bar";
+            return "admin/statistics/bar";
         } else if(style.equals("line")) {
-            return "admin/line";
+            return "admin/statistics/line";
         } else {
-            return "admin/viewStatistics";
+            return "admin/statistics/viewStatistics";
         }
     }
 
     @RequestMapping("/viewRate")
     public String viewRate(Model model) {
-        return "admin/viewRate";
+        return "admin/statistics/viewRate";
     }
 
     @RequestMapping("/secondType")
@@ -548,11 +550,11 @@ public class AdminController {
         }
         model.addAttribute("season", season);
         if(style.equals("pie")) {
-            return "admin/pie";
+            return "admin/statistics/pie";
         } else if(style.equals("doughnut")) {
-            return "admin/doughnut";
+            return "admin/statistics/doughnut";
         } else {
-            return "admin/viewStatistics";
+            return "admin/statistics/viewStatistics";
         }
 
     }
