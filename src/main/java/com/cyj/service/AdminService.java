@@ -24,6 +24,7 @@ public class AdminService {
 
     public boolean adminValid(String NT, String password) {
         AdminModel model = adminDao.findModelByNT(NT);
+        if(model==null) return false;
         String pwd = model.getPassword();
         if(pwd.equals(password)) {
             return true;

@@ -91,7 +91,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="number" class="form-control" placeholder="2017" name="year">
+                    <input type="number" class="form-control" name="year" value="2017">
                 </div>
                 <div class="form-group">
                     <select name="style" class="form-control">

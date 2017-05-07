@@ -2,6 +2,7 @@ package com.cyj.dao;
 
 import com.cyj.model.GoodsModel;
 import com.cyj.model.StockModel;
+import com.cyj.model.show.Stock;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,4 +20,8 @@ public interface StockDao {
     StockModel findStockModelByGoodsId(int id);
     GoodsModel findGoodsModelByGoodsId(int id);
     GoodsModel findGoodsModelByGname(String name);
+
+    List<Stock> search(@Param("unit")String unit,@Param("gname")String gname,
+                 @Param("minStock")int minStock,@Param("maxStock")int maxStock);
+
 }
