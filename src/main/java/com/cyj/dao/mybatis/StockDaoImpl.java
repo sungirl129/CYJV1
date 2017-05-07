@@ -3,6 +3,7 @@ package com.cyj.dao.mybatis;
 import com.cyj.dao.StockDao;
 import com.cyj.model.GoodsModel;
 import com.cyj.model.StockModel;
+import com.cyj.model.show.Stock;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -52,5 +53,10 @@ public class StockDaoImpl implements StockDao {
 
     public GoodsModel findGoodsModelByGname(String name) {
         return sqlSession.getMapper(StockDao.class).findGoodsModelByGname(name);
+    }
+
+    @Override
+    public List<Stock> search(@Param("unit") String unit, @Param("gname") String gname, @Param("minStock") int minStock, @Param("maxStock") int maxStock) {
+        return sqlSession.getMapper(StockDao.class).search(unit,gname,minStock,maxStock);
     }
 }

@@ -1,19 +1,29 @@
 package com.cyj.controller.admin;
 
 import com.cyj.model.*;
+import com.cyj.model.show.Stock;
 import com.cyj.service.*;
 import com.cyj.tools.PageUtil;
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
@@ -74,40 +84,49 @@ public class AdminController {
     @RequestMapping("/viewStock")
     public String viewStock(Model model, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo, HttpServletRequest request) {
         int pageSize = 8;
-        PageUtil nowPage = stockService.getGoodsStockInfo(pageNo, pageSize);
-        nowPage.setRowNum(4);
+        List<Stock> list = stockService.search(null,null,0,0);
+        PageUtil nowPage = new PageUtil(list,pageSize,pageNo,4);
         model.addAttribute("nowPage", nowPage);
         return "admin/stock/viewStock";
     }
 
     @RequestMapping("/search")
-    public String search(Model model, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo, String type, String condition, HttpServletRequest request) {
-        String stock = request.getParameter("stock");
-        boolean isStock = stock.equals("stock");//为true时有库存条件
-        int stockL = 0;
-        int stockR = 0;
-        if(isStock) {
-            stockL = Integer.parseInt(request.getParameter("stockL"));
-            stockR = Integer.parseInt(request.getParameter("stockR"));
+    public String search(Model model, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo,
+                         String type, String condition, String stock,
+                         @RequestParam(required = false,defaultValue = "0")int stockL,
+                         @RequestParam(required = false,defaultValue = "0")int stockR) {
+        boolean isStock = "stock".equals(stock);//为true时有库存条件
+        if(!isStock){
+            stockL = 0;
+            stockR = 0;
         }
-        int pageSize = 8;
-        PageUtil nowPage = null;
-        if(! isStock) {
-            if(type.equals("gname")) {
-                nowPage = stockService.searchGoodsStockByGname(pageNo, pageSize, condition);
-            } else if(type.equals("unit")) {
-                nowPage = stockService.searchGoodsStockByUnit(pageNo, pageSize, condition);
-            }
-        } else {
-            if(type.equals("gname")) {
-                nowPage = stockService.searchGoodsStockByGnameAndStock(pageNo, pageSize, condition,stockL,stockR);
-            } else if(type.equals("unit")) {
-                nowPage = stockService.searchGoodsStockByUnitAndStock(pageNo, pageSize, condition,stockL,stockR);
-            }
-        }
-        nowPage.setRowNum(4);
+        String unit = null,gname = null;
+        if("gname".equals(type)) gname = condition;
+        else unit = condition;
+
+        List<Stock> list = stockService.search(gname,unit,stockL,stockR);
+        PageUtil nowPage = new PageUtil(list,8,pageNo,4);
         model.addAttribute("nowPage", nowPage);
         return "admin/stock/search";
+    }
+
+    @RequestMapping("/exportStock")
+    public @ResponseBody String exportStock(Model model, String type, String condition, String stock,
+                       @RequestParam(required = false,defaultValue = "0")int stockL,
+                       @RequestParam(required = false,defaultValue = "0")int stockR) {
+
+        boolean isStock = "stock".equals(stock);//为true时有库存条件
+        if(!isStock){
+            stockL = 0;
+            stockR = 0;
+        }
+        String unit = null,gname = null;
+        if("gname".equals(type)) gname = condition;
+        else unit = condition;
+
+        List<Stock> list = stockService.search(gname,unit,stockL,stockR);
+
+        return "";
     }
 
     @RequestMapping("/makePurchasePlan")
@@ -568,13 +587,6 @@ public class AdminController {
     }
 
 
-    @RequestMapping("/predict")
-    public String predict(Model model) {
-
-        return "admin/predict/predict";
-    }
-
-
 
 
 
@@ -614,5 +626,20 @@ public class AdminController {
 //    }
 
 
+    @RequestMapping("/predict")
+    public String predict(Model model) {
+
+        return "admin/predict/predict";
+    }
+
+    @RequestMapping("download")
+    public ResponseEntity<byte[]> download(HttpServletRequest request,String fileName) throws IOException {
+        File file = new File(fileName);
+        HttpHeaders headers = new HttpHeaders();
+        fileName=new String(fileName.getBytes("UTF-8"),"iso-8859-1");//为了解决中文名称乱码问题
+        headers.setContentDispositionFormData("attachment", fileName);
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
+    }
 }
 

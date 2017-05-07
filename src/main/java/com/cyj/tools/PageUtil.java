@@ -39,6 +39,19 @@ public class PageUtil {
         }
     }
 
+    public PageUtil(List list,int pageSize,int pageNum,int rowNum){
+        this.totalCount = list.size();
+        this.pageSize = pageSize;
+        this.pageNumber = pageNum;
+        this.totalPage = this.totalCount / this.pageSize;
+        if(this.totalCount%this.pageSize!=0) this.totalPage++;
+        int begin = Math.max(0,(pageNum-1)*pageSize);
+        int end = Math.min(totalCount,pageNum*pageSize);
+        this.data = list.subList(begin,end);
+        this.setRowNum(rowNum);
+    }
+
+
     public int getTotalPage() {
         return totalPage;
     }

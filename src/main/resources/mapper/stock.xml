@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.cyj.dao.StockDao">
-    <resultMap id="stock" type="com.cyj.model.StockModel">
+    <resultMap id="stockModel" type="com.cyj.model.StockModel">
         <id column="id" property="id"/>
         <result column="goods_id" property="goodsId"/>
         <result column="gname" property="gname"/>
@@ -12,8 +12,39 @@
         <result column="min_store" property="minStore"/>
         <result column="max_store" property="maxStore"/>
     </resultMap>
-    <select id="findStockModelByGoodsId" parameterType="int" resultMap="stock">
+    <select id="findStockModelByGoodsId" parameterType="int" resultMap="stockModel">
         SELECT * FROM materialstock WHERE goods_id = #{id}
     </select>
+    
+    <resultMap id="stock" type="com.cyj.model.show.Stock">
+        <association property="stockModel" javaType="com.cyj.model.StockModel">
+            <id column="id" property="id"/>
+            <result column="goods_id" property="goodsId"/>
+            <result column="gname" property="gname"/>
+            <result column="now_number" property="nowNumber"/>
+            <result column="min_store" property="minStore"/>
+            <result column="max_store" property="maxStore"/>
+        </association>
+        <association property="goodsModel" javaType="com.cyj.model.GoodsModel">
+            <id column="goods_id" property="id"/>
+            <result column="gname" property="gname"/>
+            <result column="unit" property="unit"/>
+            <result column="spec" property="spec"/>
+            <result column="note" property="note"/>
+            <result column="url" property="url"/>
+        </association>
+    </resultMap>
+
+    <select id="search" resultMap="stock">
+        SELECT materialstock.*,unit,spec,note,url FROM materialinfo
+        LEFT JOIN materialstock ON materialstock.goods_id = materialinfo.id
+        <where>
+            <if test="unit!=null"> unit=#{unit}</if>
+            <if test="gname!=null">AND materialinfo.gname=#{gname}</if>
+            <if test="minStock!=0">AND  min_store>=#{minStock}</if>
+            <if test="maxStock!=0">AND #{maxStock}>=max_store</if>
+        </where>
+    </select>
+    
 </mapper>
 

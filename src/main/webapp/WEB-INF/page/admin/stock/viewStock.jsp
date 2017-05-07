@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
-<head>
+<head>admin/stock/viewStock
     <title>viewStock</title>
     <link rel="stylesheet" href="/resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
@@ -57,15 +57,15 @@
     <c:forEach var="item" items="${row}">
         <div class="col-xs-6 col-md-3">
             <div class="thumbnail">
-                <img src="/resources/${item.get("goodsModel").url}.jpg" alt="${item.get("goodsModel").gname}">
+                <img src="/resources/${item.goodsModel.url}.jpg" alt="${item.goodsModel.gname}">
                 <div class="caption">
-                    <h3>${item.get("goodsModel").gname}</h3>
-                    <p>单位：${item.get("goodsModel").unit}</p>
-                    <p>规格：${item.get("goodsModel").spec}</p>
-                    <p>备注：${item.get("goodsModel").note}</p>
-                    <p>现有库存：${item.get("stockModel").nowNumber}</p>
-                    <p>最小库存：${item.get("stockModel").minStore}</p>
-                    <p>最大库存：${item.get("stockModel").maxStore}</p>
+                    <h3>${item.goodsModel.gname}</h3>
+                    <p>单位：${item.goodsModel.unit}</p>
+                    <p>规格：${item.goodsModel.spec}</p>
+                    <p>备注：${item.goodsModel.note}</p>
+                    <p>现有库存：${item.stockModel.nowNumber}</p>
+                    <p>最小库存：${item.stockModel.minStore}</p>
+                    <p>最大库存：${item.stockModel.maxStore}</p>
                 </div>
             </div>
         </div>
