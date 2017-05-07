@@ -19,12 +19,14 @@
     </div>
     <%--<button id="randomizeData">Randomize Data</button>--%>
     <script>
+        var color = Chart.helpers.color;
         var chartData = {
             labels: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
             datasets: [{
                 type: 'bar',
                 label: '采购个数',
-                backgroundColor: window.chartColors.blue,
+                backgroundColor: color(window.chartColors.blue).alpha(0.2).rgbString(),
+                borderColor: window.chartColors.blue,
                 data: [
                     ${purchaseNumber[0]},
                     ${purchaseNumber[1]},
@@ -39,12 +41,12 @@
                     ${purchaseNumber[10]},
                     ${purchaseNumber[11]}
                 ],
-                borderColor: 'white',
                 borderWidth: 2
             },{
                 type: 'bar',
                 label: '完成个数',
-                backgroundColor: window.chartColors.purple,
+                backgroundColor: color(window.chartColors.red).alpha(0.2).rgbString(),
+                borderColor: window.chartColors.red,
                 data: [
                     ${applyNumber[0]},
                     ${applyNumber[1]},
@@ -59,7 +61,6 @@
                     ${applyNumber[10]},
                     ${applyNumber[11]}
                 ],
-                borderColor: 'white',
                 borderWidth: 2
             }]
         };

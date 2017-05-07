@@ -21,10 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -82,7 +81,7 @@ public class AdminController {
     }
 
     @RequestMapping("/viewStock")
-    public String viewStock(Model model, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo, HttpServletRequest request) {
+    public String viewStock(Model model, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo) {
         int pageSize = 8;
         List<Stock> list = stockService.search(null,null,0,0);
         PageUtil nowPage = new PageUtil(list,pageSize,pageNo,4);

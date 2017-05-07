@@ -35,7 +35,21 @@
                     window.chartColors.yellow,
                     window.chartColors.green,
                 ],
-                label: '${gname}'
+                label: '${gname}采购'
+            },{
+                data: [
+                    ${season1[0]},
+                    ${season1[1]},
+                    ${season1[2]},
+                    ${season1[3]},
+                ],
+                backgroundColor: [
+                    window.chartColors.red,
+                    window.chartColors.orange,
+                    window.chartColors.yellow,
+                    window.chartColors.green,
+                ],
+                label: '${gname}完成'
             }],
             labels: [
                 "第一季度",

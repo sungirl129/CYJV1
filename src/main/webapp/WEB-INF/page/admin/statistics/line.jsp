@@ -17,15 +17,15 @@
     <div style="width: 75%">
         <canvas id="chart-area-line"></canvas>
     </div>
-    <%--<button id="randomizeData">Randomize Data</button>--%>
     <script>
-
         var chartData = {
             labels: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
             datasets: [{
                 type: 'line',
                 label: '采购个数',
-                backgroundColor: window.chartColors.blue,
+                borderColor: window.chartColors.blue,
+                borderWidth: 2,
+                fill: false,
                 data: [
                     ${purchaseNumber[0]},
                     ${purchaseNumber[1]},
@@ -40,12 +40,12 @@
                     ${purchaseNumber[10]},
                     ${purchaseNumber[11]}
                 ],
-                borderColor: 'white',
-                borderWidth: 2
             },{
                 type: 'line',
                 label: '完成个数',
-                backgroundColor: window.chartColors.purple,
+                borderColor: window.chartColors.red,
+                borderWidth: 2,
+                fill: false,
                 data: [
                     ${applyNumber[0]},
                     ${applyNumber[1]},
@@ -60,8 +60,6 @@
                     ${applyNumber[10]},
                     ${applyNumber[11]}
                 ],
-                borderColor: 'white',
-                borderWidth: 2
             }]
         };
 

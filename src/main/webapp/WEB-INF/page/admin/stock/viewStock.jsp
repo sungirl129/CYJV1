@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
-<head>admin/stock/viewStock
+<head>
     <title>viewStock</title>
     <link rel="stylesheet" href="/resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
