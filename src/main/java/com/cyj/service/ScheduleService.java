@@ -97,20 +97,20 @@ public class ScheduleService {
         return (scheduleDao.cancelPublish(scheduleId) == 1);
     }
 
-    public int[] viewScheduleByGnameYear(int goodsId, int year) {
-        int num[] = new int[12];
-        for(int i = 0; i < 12; i++) {
-            num[i] = 0;
-        }
-        List<ScheduleModel> list = scheduleDao.viewScheduleByGnameYear(goodsId, year);
-        for(ScheduleModel scheduleModel:list) {
-            Timestamp time = scheduleModel.getScheduleDate();
-            int month = time.getMonth();
-            int number = scheduleModel.getBuyNumber();
-            num[month] += number;
-        }
-        return num;
-    }
+//    public int[] viewScheduleByGnameYear(int goodsId, int year) {
+//        int num[] = new int[12];
+//        for(int i = 0; i < 12; i++) {
+//            num[i] = 0;
+//        }
+//        List<ScheduleModel> list = scheduleDao.viewScheduleByGnameYear(goodsId, year);
+//        for(ScheduleModel scheduleModel:list) {
+//            Timestamp time = scheduleModel.getScheduleDate();
+//            int month = time.getMonth();
+//            int number = scheduleModel.getBuyNumber();
+//            num[month] += number;
+//        }
+//        return num;
+//    }
 }
 
 

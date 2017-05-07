@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.logging.Logger;
 
 /**
@@ -47,6 +48,8 @@ public class AdminController {
     private RejectedService rejectedService;
     @Resource
     private AdminService adminService;
+    @Resource
+    private StatisticsService statisticsService;
 
     @RequestMapping("/adminMain")
     public String adminMain(Model model) {
@@ -214,6 +217,7 @@ public class AdminController {
                         publishModel.setApplyNumber(0);
                         publishModel.setPublishState(0);
                         if(!publishService.publishSchedule(publishModel)) throw new Exception("error");
+                        statisticsService.insertPurchaseNumber(goodsId, buyNumber);
                     }
                 } else {
                     //取消计划
@@ -317,9 +321,13 @@ public class AdminController {
                     ApplicationModel applicationModel = applicationService.findModelById(applicationId);
                     int supplyNumber = applicationModel.getSupplyNumber();
                     int publishId = applicationModel.getPublishId();
+                    int goodsId = applicationModel.getGoodsId();
+                    int supplierId = applicationModel.getSupplierId();
                    if(!applicationService.applicationAccess(applicationId)) throw new Exception("error1");
                     OrderModel orderModel = new OrderModel();
                     orderModel.setApplicationId(applicationId);
+                    orderModel.setGoodsId(goodsId);
+                    orderModel.setSupplierId(supplierId);
                     orderModel.setAcceptNumber(0);
                     orderModel.setPayedMoney(0);
                     orderModel.setOrderState(0);
@@ -401,6 +409,13 @@ public class AdminController {
         if(orderService.SupplyNumberEqualsArriveNumber(orderId)) {
             if(orderService.checkPayedMoney(orderId)) {
                 orderService.changeOrderState(orderId,1);
+                OrderModel orderModel = orderService.findModelById(orderId);
+                int acceptNumber = orderModel.getAcceptNumber();
+                int goodsId = orderModel.getGoodsId();
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH) + 1;
+                statisticsService.updateInNumber(acceptNumber, goodsId, year, month);
             }
         }
         String url = "/admin/orderDetail?orderId=" + orderId;
@@ -515,49 +530,50 @@ public class AdminController {
         return "admin/statistics/statistics";
     }
 
-    @RequestMapping("/pie")
-    public String pie(Model model, String gname, int year, String style) {
+    @RequestMapping("/chooseType")
+    public String chooseType(Model model, String gname, int year, String style) {
         model.addAttribute("gname", gname);
         int goodsId = stockService.findGoodsIdByGname(gname);
-        int[] number = scheduleService.viewScheduleByGnameYear(goodsId, year);
-        model.addAttribute("number", number);
+        int[] month = statisticsService.statisticsGoodsByYear(goodsId, year);
+        int[] purchaseNumber = new int[12];
+        int[] applyNumber = new int[12];
+        for(int i = 0; i < 12; i++) {
+            purchaseNumber[i] = month[i * 2];
+            applyNumber[i] = month[i * 2 + 1];
+        }
+        model.addAttribute("purchaseNumber", purchaseNumber);
+        model.addAttribute("applyNumber", applyNumber);
+        model.addAttribute("purchaseNumber", purchaseNumber);
+        model.addAttribute("applyNumber", applyNumber);
+        int[] season = new int[4];
+        int[] season1 = new int[4];
+        for(int i = 0; i < 4; i++) {
+            season[i] = purchaseNumber[i * 3] + purchaseNumber[i * 3 + 1] + purchaseNumber[i * 3 + 2];
+            season1[i] = applyNumber[i * 3] + applyNumber[i * 3 + 1] + applyNumber[i * 3 + 2];
+        }
+        model.addAttribute("season", season);
+        model.addAttribute("season1", season1);
+
         if(style.equals("bar")) {
             return "admin/statistics/bar";
         } else if(style.equals("line")) {
             return "admin/statistics/line";
-        } else {
-            return "admin/statistics/viewStatistics";
-        }
-    }
-
-    @RequestMapping("/viewRate")
-    public String viewRate(Model model) {
-        return "admin/statistics/viewRate";
-    }
-
-    @RequestMapping("/secondType")
-    public String secondType(Model model, String gname, int year, String style) {
-        model.addAttribute("gname", gname);
-        int goodsId = stockService.findGoodsIdByGname(gname);
-       // int[] number = publishService.viewRateByGnameYear(goodsId, year);
-        int[] number = new int[12];
-        number[0] = number[1] = number[2] = number[3] = 10;
-        number[4] = number[5] = number[6] = number[7] = 12;
-        number[8] = number[9] = number[10] = number[11] = 10;
-        int[] season = new int[4];
-        for(int i = 0; i < 4; i++) {
-            season[i] = number[i * 3] + number[i * 3 + 1] + number[i * 3 + 2];
-        }
-        model.addAttribute("season", season);
-        if(style.equals("pie")) {
+        } else if(style.equals("pie")) {
             return "admin/statistics/pie";
-        } else if(style.equals("doughnut")) {
+        } else if(style.equals("huan")) {
             return "admin/statistics/doughnut";
         } else {
             return "admin/statistics/viewStatistics";
         }
-
     }
+
+
+    @RequestMapping("/predict")
+    public String predict(Model model) {
+
+        return "admin/predict/predict";
+    }
+
 
 
 
@@ -597,12 +613,6 @@ public class AdminController {
 //        return resultString;
 //    }
 
-
-    @RequestMapping("/predict")
-    public String predict(Model model) {
-
-        return "admin/predict/predict";
-    }
 
 }
 

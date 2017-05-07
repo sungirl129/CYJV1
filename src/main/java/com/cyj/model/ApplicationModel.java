@@ -10,6 +10,7 @@ public class ApplicationModel {
     private int publishId;
     private int scheduleId;
     private int supplierId;
+    private int goodsId;
     private int supplyNumber;
     private double price;
     private int  valid;
@@ -56,6 +57,14 @@ public class ApplicationModel {
 
     public void setSupplierId(int supplierId) {
         this.supplierId = supplierId;
+    }
+
+    public int getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(int goodsId) {
+        this.goodsId = goodsId;
     }
 
     public int getSupplyNumber() {

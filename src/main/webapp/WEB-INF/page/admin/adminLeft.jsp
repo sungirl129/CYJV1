@@ -24,8 +24,8 @@
     <a href="/admin/processingOrder?pageNum=1" class="list-group-item" target="adminRight">订单管理</a>
     <a href="/admin/historyOrder?pageNum=1" class="list-group-item" target="adminRight">历史订单</a>
     <a href="/admin/predict" class="list-group-item" target="adminRight">采购预测</a>
-    <a href="/admin/statistics" class="list-group-item" target="adminRight">采购数量统计</a>
-    <a href="/admin/viewRate" class="list-group-item" target="adminRight">采购完成率统计</a>
+    <a href="/admin/statistics" class="list-group-item" target="adminRight">采购统计</a>
+    <%--<a href="/admin/viewRate" class="list-group-item" target="adminRight">采购完成率统计</a>--%>
     <a href="/admin/manageSuppliers?pageNo=1" class="list-group-item" target="adminRight">供应商档案管理</a>
     <a href="/admin/modifyAdmin" class="list-group-item" target="adminRight">修改账户</a>
     <a href="/admin/adminExit" class="list-group-item" target="_top">退出</a>

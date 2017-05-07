@@ -67,6 +67,7 @@ public class SupplierController {
                 int publishId = Integer.parseInt(sPublishId);
                 PublishModel publishModel = publishService.findModelById(publishId);
                 int scheduleId = publishModel.getScheduleId();
+                int goodsId = publishModel.getGoodsId();
                 String strNumber = request.getParameter("n" + sPublishId);
                 String strPrice = request.getParameter("p" + sPublishId);
                 int supplyNumber = Integer.parseInt(strNumber);
@@ -75,6 +76,7 @@ public class SupplierController {
                 applicationModel.setPublishId(publishId);
                 applicationModel.setScheduleId(scheduleId);
                 applicationModel.setSupplierId(supplierId);
+                applicationModel.setGoodsId(goodsId);
                 applicationModel.setSupplyNumber(supplyNumber);
                 applicationModel.setPrice(price);
                 applicationModel.setValid(0);
