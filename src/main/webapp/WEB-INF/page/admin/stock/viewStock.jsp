@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
     <script src="/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="/resources/js/export.js"></script>
 </head>
 <body>
 
@@ -21,7 +22,7 @@
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form action="/admin/search?pageNo=1" class="navbar-form navbar-left">
+            <form action="/admin/search?pageNo=1" id="stockForm" class="navbar-form navbar-left">
                 <div class="form-group">
                     <select name="type" class="form-control">
                         <option value="gname" selected="selected">货物名称</option>
@@ -47,6 +48,7 @@
                     <input type="number" class="form-control" placeholder="最大库存" name="stockR">
                 </div>
                 <button type="submit" class="btn btn-default">搜索</button>
+                <a target="_blank" onclick="exportExcel(this,'stockForm','/admin/exportStock')" class="btn btn-default">导出</a>
             </form>
         </div>
     </div>

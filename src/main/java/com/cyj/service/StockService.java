@@ -45,6 +45,8 @@ public class StockService {
     }
 
     public List<Stock> search(String gname,String unit,int stockL,int stockR){
+        if(gname!=null&&gname.equals("")) gname = null;
+        if(unit!=null&&unit.equals("")) unit = null;
         return stockDao.search(unit,gname,stockL,stockR);
     }
 

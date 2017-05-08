@@ -1,5 +1,6 @@
 package com.cyj.controller.admin;
 
+import com.cyj.excel.SheetHandler;
 import com.cyj.model.*;
 import com.cyj.model.show.Stock;
 import com.cyj.service.*;
@@ -22,8 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -94,6 +94,7 @@ public class AdminController {
                          String type, String condition, String stock,
                          @RequestParam(required = false,defaultValue = "0")int stockL,
                          @RequestParam(required = false,defaultValue = "0")int stockR) {
+        logger.info("search");
         boolean isStock = "stock".equals(stock);//为true时有库存条件
         if(!isStock){
             stockL = 0;
@@ -106,13 +107,13 @@ public class AdminController {
         List<Stock> list = stockService.search(gname,unit,stockL,stockR);
         PageUtil nowPage = new PageUtil(list,8,pageNo,4);
         model.addAttribute("nowPage", nowPage);
-        return "admin/stock/search";
+        return "admin/stock/viewStock";
     }
 
     @RequestMapping("/exportStock")
     public @ResponseBody String exportStock(Model model, String type, String condition, String stock,
                        @RequestParam(required = false,defaultValue = "0")int stockL,
-                       @RequestParam(required = false,defaultValue = "0")int stockR) {
+                       @RequestParam(required = false,defaultValue = "0")int stockR) throws Exception {
 
         boolean isStock = "stock".equals(stock);//为true时有库存条件
         if(!isStock){
@@ -125,7 +126,10 @@ public class AdminController {
 
         List<Stock> list = stockService.search(gname,unit,stockL,stockR);
 
-        return "";
+        File file = new File(UUID.randomUUID()+".xlsx");
+        if(!file.exists()) file.createNewFile();
+        SheetHandler.exportSheet(file,Arrays.asList(Stock.HEADER),list);
+        return "/admin/download?fileName=stock.xlsx&path="+file.getName();
     }
 
     @RequestMapping("/makePurchasePlan")
@@ -632,13 +636,15 @@ public class AdminController {
     }
 
     @RequestMapping("download")
-    public ResponseEntity<byte[]> download(HttpServletRequest request,String fileName) throws IOException {
-        File file = new File(fileName);
+    public ResponseEntity<byte[]> download(HttpServletRequest request,String fileName,String path) throws IOException {
+        File file = new File(path);
         HttpHeaders headers = new HttpHeaders();
         fileName=new String(fileName.getBytes("UTF-8"),"iso-8859-1");//为了解决中文名称乱码问题
         headers.setContentDispositionFormData("attachment", fileName);
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
+        byte[] data = FileUtils.readFileToByteArray(file);
+        file.deleteOnExit();
+        return new ResponseEntity<byte[]>(data,headers, HttpStatus.CREATED);
     }
 }
 

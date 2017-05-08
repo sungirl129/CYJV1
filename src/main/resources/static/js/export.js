@@ -1,4 +1,5 @@
-function exportExcel(formId,exportURL) {
+function exportExcel(_this,formId,exportURL) {
+    // console.log(exportURL);
     $.ajax({
         cache: true,
         type: "POST",
@@ -7,9 +8,10 @@ function exportExcel(formId,exportURL) {
         async: false,
         error: function(request) {
             alert("Connection error");
+            console.log(request);
         },
         success: function(data) {
-            console.log(data);
+            // console.log(data);
             window.open(data);
         }
     });
