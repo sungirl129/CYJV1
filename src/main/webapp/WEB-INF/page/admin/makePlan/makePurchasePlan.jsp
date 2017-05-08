@@ -11,10 +11,10 @@
 <head>
     <title>制定采购计划</title>
     <link rel="stylesheet" href="/resources/css/admin.css" type="text/css">
-    <link rel="stylesheet" href="/resources/css/main.css" type="text/css">
     <link rel="stylesheet" href="/resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
     <script src="/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script src="/resources/js/export.js"></script>
 </head>
 <body>
 <h4 class="title_h4">制定采购计划</h4>
@@ -42,7 +42,8 @@
     </c:forEach>
     <input hidden type="number" name="pageNum" value="${nowPage.pageNumber}">
     <div>
-        <button type="submit">批量加入计划</button>
+        <button type="submit" class="btn">批量加入计划</button>
+        <button type="button" class="btn" data-toggle="modal" data-target="#importModal">导入</button>
     </div>
 </form>
 
@@ -66,5 +67,36 @@
         <a href="/admin/makePurchasePlan?pageNum=${nowPage.totalPage}">尾页</a>
     </p>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">采购计划导入</h4>
+            </div>
+            <div class="modal-body">
+                <form id="importForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <a class="btn" onclick="exportExcel(this,'importForm','/admin/planExcel')" >模板导出</a>
+                    </div>
+                    <div class="form-group">
+                        <label for="importFile">导入文件</label>
+                        <input type="file" name="file" accept="application/msexcel" class="form-control" id="importFile">
+                        <p class="help-block">只接收.xlsx/.xls</p>
+                    </div>
+                </form>
+            </div>
+            <div id="importResult"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="importExcel('importForm','importResult','/admin/planImport')" >确定</button>
+                <button type="button" class="btn" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

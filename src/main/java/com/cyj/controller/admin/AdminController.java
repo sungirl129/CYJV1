@@ -1,10 +1,12 @@
 package com.cyj.controller.admin;
 
 import com.cyj.excel.SheetHandler;
+import com.cyj.excel.SimpleImportStatus;
 import com.cyj.model.*;
 import com.cyj.model.show.Stock;
 import com.cyj.service.*;
 import com.cyj.tools.PageUtil;
+import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -129,7 +132,8 @@ public class AdminController {
         File file = new File(UUID.randomUUID()+".xlsx");
         if(!file.exists()) file.createNewFile();
         SheetHandler.exportSheet(file,Arrays.asList(Stock.HEADER),list);
-        return "/admin/download?fileName=stock.xlsx&path="+file.getName();
+        String fileName = "stock.xlsx";
+        return "/admin/download?fileName="+fileName+"&path="+file.getName();
     }
 
     @RequestMapping("/makePurchasePlan")
@@ -139,6 +143,29 @@ public class AdminController {
         nowPage.setRowNum(4);
         model.addAttribute("nowPage", nowPage);
         return "admin/makePlan/makePurchasePlan";
+    }
+
+    @RequestMapping("/planExcel")
+    public @ResponseBody String planExcel() throws Exception {
+        File file = new File(UUID.randomUUID()+".xlsx");
+        if(!file.exists()) file.createNewFile();
+        SheetHandler.exportSheet(file,Arrays.asList(ScheduleModel.HEADER),null);
+        String fileName = "plan.xlsx";
+        return "/admin/download?fileName="+fileName+"&path="+file.getName();
+    }
+
+    @RequestMapping("/planImport")
+    public @ResponseBody String planImport(@RequestParam(value = "file",required = false) MultipartFile file) throws Exception {
+
+        if(file==null||file.isEmpty()) return "no file";
+
+        File tempFile = new File(UUID.randomUUID()+"_"+file.getOriginalFilename());
+        file.transferTo(tempFile);
+        SimpleImportStatus<ScheduleModel>list = SheetHandler.importSheet(tempFile,ScheduleModel.class,true);
+        tempFile.deleteOnExit();
+        Gson gson = new Gson();
+        logger.info(gson.toJson(list));
+        return gson.toJson(list);
     }
 
     @RequestMapping("/addPlan")

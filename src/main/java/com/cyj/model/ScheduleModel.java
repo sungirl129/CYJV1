@@ -1,11 +1,18 @@
 package com.cyj.model;
 
+import com.cyj.excel.SheetHandler;
+import com.cyj.excel.SheetRowConversion;
+import org.apache.poi.ss.usermodel.Row;
+
 import java.sql.Timestamp;
 
 /**
  * Created by Administrator on 2017/4/5.
  */
-public class ScheduleModel {
+public class ScheduleModel implements SheetRowConversion {
+
+    public static final String[] HEADER = new String[]{"名称","数量"};
+
     private int id;
     private int goodsId;
     private int buyNumber;
@@ -68,5 +75,33 @@ public class ScheduleModel {
 
     public void setPublishDate(Timestamp publishDate) {
         this.publishDate = publishDate;
+    }
+
+    /**
+     * 导入：商品名称
+     * */
+    private String gname;
+
+    public String getGname() {
+        return gname;
+    }
+
+    public void setGname(String gname) {
+        this.gname = gname;
+    }
+
+    /**
+     * 导入
+     * */
+    @Override
+    public SheetRowConversion convertToModel(Row row) {
+        this.gname = SheetHandler.getStringValueFromCell(row.getCell(0));
+        this.buyNumber = (int) SheetHandler.getNumericValueFromCell(row.getCell(1));
+        return this;
+    }
+
+    @Override
+    public Row convertToRow(Row row) {
+        return null;
     }
 }
