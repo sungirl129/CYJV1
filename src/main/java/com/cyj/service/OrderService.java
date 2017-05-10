@@ -116,14 +116,34 @@ public class OrderService {
         return (orderDao.updateState(state,orderId) == 1);
     }
 
-    public OrderModel getOrderModelByApplicationId(int appliationId) {
-        return orderDao.findModelByApplicationId(appliationId);
+
+    //供货商查看订单
+    public PageUtil viewOnePageMyOrder(int pageNum, int pageSize, int supplierId, int state) {
+        List<Map<String,Object>> list = new ArrayList<>();
+        int totalCount = getMyOrderTotalCount(supplierId, state);
+        int offset = (pageNum - 1) * pageSize;
+        List<OrderModel> orderModelList = orderDao.getOnePageOrderBySupplierIdandState(supplierId, state, offset, pageSize);
+        for(OrderModel orderModel:orderModelList) {
+            Map<String,Object> map = new HashMap<>();
+            map.put("orderModel",orderModel);
+            int applicationId = orderModel.getApplicationId();
+            ApplicationModel applicationModel = applicationService.findModelById(applicationId);
+            map.put("applicationModel",applicationModel);
+            int goodsId = orderModel.getGoodsId();
+            GoodsModel goodsModel = stockService.findGoodsModelByGoodsId(goodsId);
+            map.put("goodsModel",goodsModel);
+            list.add(map);
+        }
+        PageUtil pageUtil = new PageUtil(pageSize,totalCount);
+        pageUtil.setData(list);
+        pageUtil.setPageNumber(pageNum);
+        return pageUtil;
     }
 
-    public boolean checkOrderStateByApplicationId(int applicationId, int state) {
-        OrderModel orderModel = orderDao.findModelByApplicationId(applicationId);
-        int state1 = orderModel.getOrderState();
-        return (state == state1);
+    public int getMyOrderTotalCount(int supplierId, int state) {
+        List<OrderModel> orderModelList = orderDao.getItemBySupplierIdAndState(supplierId, state);
+        return orderModelList.size();
     }
+
 
 }

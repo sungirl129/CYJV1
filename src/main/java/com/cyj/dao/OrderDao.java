@@ -13,8 +13,10 @@ public interface OrderDao {
     List<OrderModel> getAllOrderByState(int state);
     List<OrderModel> getOnePageOrderByState(@Param("state") int state, @Param("offset")int offset, @Param("pageSize")int pageSize);
     OrderModel findModelById(int id);
-    int updateAcceptNumber(@Param("acceptNum")int acceptNumber,@Param("id")int id);
+    int updateAcceptNumber(@Param("acceptNumber")int acceptNumber,@Param("id")int id);
     int updatePayedMoney(@Param("payedMoney")double payedMoney, @Param("id")int id);
     int updateState(@Param("state")int state, @Param("id")int id);
     OrderModel findModelByApplicationId(int applicationId);
+    List<OrderModel> getItemBySupplierIdAndState(@Param("supplierId")int supplierId, @Param("state") int state);
+    List<OrderModel> getOnePageOrderBySupplierIdandState(@Param("supplierId")int supplierId, @Param("state") int state, @Param("offset")int offset, @Param("pageSize") int pageSize);
 }

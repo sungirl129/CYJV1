@@ -70,20 +70,20 @@
     <p>
         总共【${nowPage.totalPage}】页 &nbsp;&nbsp;
         ${nowPage.pageNumber}/${nowPage.totalPage}&nbsp;&nbsp;
-        <a href="/admin/viewUnpostSchedule?pageNo=1">首页</a>
+        <a href="/admin/manageSchedule?pageNo=1&type=1">首页</a>
         <c:choose>
-            <c:when test="${requestScope.nowPage.pageNumber > 1}"><a href="/admin/viewUnpostSchedule?pageNo=${nowPage.pageNumber-1}">上一页</a></c:when>
+            <c:when test="${requestScope.nowPage.pageNumber > 1}"><a href="/admin/manageSchedule?pageNo=${nowPage.pageNumber-1}&type=1">上一页</a></c:when>
             <c:otherwise>
                 上一页
             </c:otherwise>
         </c:choose>
         <c:choose>
-            <c:when test="${nowPage.pageNumber < nowPage.totalPage}"><a href="/admin/viewUnpostSchedule?pageNo=${nowPage.pageNumber+1}">下一页</a></c:when>
+            <c:when test="${nowPage.pageNumber < nowPage.totalPage}"><a href="/admin/manageSchedule?pageNo=${nowPage.pageNumber+1}&type=1">下一页</a></c:when>
             <c:otherwise>
                 下一页
             </c:otherwise>
         </c:choose>
-        <a href="/admin/viewUnpostSchedule?pageNo=${nowPage.totalPage}">尾页</a>
+        <a href="/admin/manageSchedule?pageNo=${nowPage.totalPage}&type=1">尾页</a>
     </p>
 </div>
 

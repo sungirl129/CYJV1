@@ -32,7 +32,7 @@ public class OrderDaoImpl implements OrderDao{
         return sqlSession.getMapper(OrderDao.class).findModelById(id);
     }
 
-    public int updateAcceptNumber(int acceptNumber,int id) {
+    public int updateAcceptNumber(@Param("acceptNumber")int acceptNumber,@Param("id")int id) {
         return sqlSession.getMapper(OrderDao.class).updateAcceptNumber(acceptNumber,id);
     }
 
@@ -46,5 +46,14 @@ public class OrderDaoImpl implements OrderDao{
 
     public OrderModel findModelByApplicationId(int applicationId) {
         return sqlSession.getMapper(OrderDao.class).findModelByApplicationId(applicationId);
+    }
+
+    public List<OrderModel> getItemBySupplierIdAndState(@Param("supplierId") int supplierId, @Param("state") int state) {
+        return sqlSession.getMapper(OrderDao.class).getItemBySupplierIdAndState(supplierId, state);
+    }
+
+    @Override
+    public List<OrderModel> getOnePageOrderBySupplierIdandState(@Param("supplierId") int supplierId, @Param("state") int state, @Param("offset") int offset, @Param("pageSize") int pageSize) {
+        return sqlSession.getMapper(OrderDao.class).getOnePageOrderBySupplierIdandState(supplierId, state, offset, pageSize);
     }
 }

@@ -17,7 +17,7 @@
 <body>
 <c:forEach var="list" items="${nowPage.data}">
     <div class="row">
-        <c:forEach var="item" items="list">
+        <c:forEach var="item" items="${list}">
             <div class="col-xs-6 col-md-3">
                 <div class="thumbnail">
                     <img src="/resources/${item.get("goodsModel").url}.jpg" alt="${item.get("goodsModel").gname}" class="img-circle">

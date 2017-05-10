@@ -25,8 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
@@ -126,9 +128,7 @@ public class AdminController {
         String unit = null,gname = null;
         if("gname".equals(type)) gname = condition;
         else unit = condition;
-
         List<Stock> list = stockService.search(gname,unit,stockL,stockR);
-
         File file = new File(UUID.randomUUID()+".xlsx");
         if(!file.exists()) file.createNewFile();
         SheetHandler.exportSheet(file,Arrays.asList(Stock.HEADER),list);
@@ -158,19 +158,25 @@ public class AdminController {
     public @ResponseBody String planImport(@RequestParam(value = "file",required = false) MultipartFile file) throws Exception {
 
         if(file==null||file.isEmpty()) return "no file";
-
-        File tempFile = new File(UUID.randomUUID()+"_"+file.getOriginalFilename());
+        File tempFile = new File(UUID.randomUUID() + "_" + file.getOriginalFilename());
         file.transferTo(tempFile);
-        SimpleImportStatus<ScheduleModel>list = SheetHandler.importSheet(tempFile,ScheduleModel.class,true);
+        SimpleImportStatus<ScheduleModel> list = SheetHandler.importSheet(tempFile,ScheduleModel.class,true);
         tempFile.deleteOnExit();
         Gson gson = new Gson();
+        logger.info("logger====================================");
         logger.info(gson.toJson(list));
+        List<ScheduleModel> scheduleModelList = list.getBatchAddList();
+        for(ScheduleModel scheduleModel:scheduleModelList) {
+            int gid = stockService.findGoodsIdByGname(scheduleModel.getGname());
+            int buyNumber = scheduleModel.getBuyNumber();
+            scheduleService.addPlan(gid,buyNumber);
+        }
         return gson.toJson(list);
     }
 
     @RequestMapping("/addPlan")
     public void addPlan(Model model,int pageNum, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
         boolean isHave = request.getParameterMap().containsKey("selectGoods");
         if(isHave) {
             String[] strGoodsId = request.getParameterValues("selectGoods");
@@ -179,14 +185,7 @@ public class AdminController {
                 int goodsId = Integer.parseInt(strGoodsId[i]);
                 String strNumber = request.getParameter(strGoodsId[i]);
                 int buyNumber = Integer.parseInt(strNumber);
-                ScheduleModel scheduleModel = scheduleService.getUnpublishedModelByGoodsId(goodsId);
-                boolean sign;
-                if(scheduleModel != null) {
-                    sign = scheduleService.addBuyNumber(buyNumber,timestamp,scheduleModel);
-                } else {
-                    sign = scheduleService.insertSchedule(goodsId,buyNumber,timestamp);
-                }
-                flag = sign;
+                flag = scheduleService.addPlan(goodsId,buyNumber);
             }
 //            if(flag)
 //                response.getWriter().write("<script language=\"javascript\">alert(\"操作成功!\");</script>");
@@ -205,20 +204,11 @@ public class AdminController {
         return "admin/makePlan/goodsDetail";
     }
 
-    @RequestMapping("/viewUnpostSchedule")
-    public String viewUnpostSchedule(Model model,@RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo) {
-        int pageSize = 8;
-        PageUtil nowPage = scheduleService.getOnePageValidUnpublish(0, 0, pageNo,pageSize);
-        nowPage.setRowNum(4);
-        model.addAttribute("nowPage", nowPage);
-        return "admin/schedule/viewUnpostSchedule";
-    }
-
     @RequestMapping("/manageSchedule")
-    public String manageSchedule(Model model, int type, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo) {
+    public String manageSchedule(Model model, @RequestParam(value = "type",defaultValue = "0",required = false)int type, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo) {
         int pageSize = 8;
-        PageUtil nowPage = null;
-        String title = "";
+        PageUtil nowPage;
+        String title;
         if(type == 0) {
             nowPage = scheduleService.getOnePageValidUnpublish(0, 0, pageNo,pageSize);
             nowPage.setRowNum(4);
@@ -266,7 +256,7 @@ public class AdminController {
                         publishModel.setApplyNumber(0);
                         publishModel.setPublishState(0);
                         if(!publishService.publishSchedule(publishModel)) throw new Exception("error");
-                        statisticsService.insertPurchaseNumber(goodsId, buyNumber);
+                        if(!statisticsService.insertPurchaseNumber(goodsId, buyNumber)) throw new Exception("error");
                     }
                 } else {
                     //取消计划
@@ -284,7 +274,7 @@ public class AdminController {
             int buyNum = Integer.parseInt(strBuyNumber);
             scheduleService.changeBuyNumber(buyNum,scheduleId);
         }
-        return "redirect:/admin/viewUnpostSchedule";
+        return "redirect:/admin/manageSchedule";
     }
 
 
@@ -441,7 +431,7 @@ public class AdminController {
             int publishId = applicationService.getPublishIdById(applicationId);
             if(!publishService.returnGoodsChangePulish(publishId,returnedQuantity)) throw new Exception("error");
         }
-        String url = "/admin/orderDetail?orderId=" + orderId;
+        String url = "redirect:/admin/orderDetail?orderId=" + orderId;
         return url;
     }
 
@@ -467,7 +457,7 @@ public class AdminController {
                 statisticsService.updateInNumber(acceptNumber, goodsId, year, month);
             }
         }
-        String url = "/admin/orderDetail?orderId=" + orderId;
+        String url = "redirect:/admin/orderDetail?orderId=" + orderId;
         return url;
     }
 
@@ -662,7 +652,7 @@ public class AdminController {
         return "admin/predict/predict";
     }
 
-    @RequestMapping("download")
+    @RequestMapping("/download")
     public ResponseEntity<byte[]> download(HttpServletRequest request,String fileName,String path) throws IOException {
         File file = new File(path);
         HttpHeaders headers = new HttpHeaders();

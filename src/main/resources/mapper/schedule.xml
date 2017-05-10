@@ -11,6 +11,7 @@
         <result column="is_publish" property="isPublish"/>
         <result column="state" property="scheduleState"/>
         <result column="date" property="scheduleDate"/>
+        <result column="publish_date" property="publishDate"/>
     </resultMap>
     <select id="getUnpublishedModelByGoodsId" resultMap="schedule" parameterType="int">
         SELECT * FROM schedule WHERE goods_id=#{id} AND state=0
@@ -40,11 +41,11 @@
     <update id="publishChangeScheduleState" parameterType="int">
         UPDATE schedule SET is_publish=1,state=1 WHERE id = #{scheduleId}
     </update>
-    <update id="addPublishDate" parameterType="int">
+    <update id="addPublishDate">
         UPDATE schedule SET publish_date = #{publishDate} WHERE id = #{id}
     </update>
     <update id="cancelPublish" parameterType="int">
-        UPDATE schedule SET state = 0 WHERE id = #{scheduleId}
+        UPDATE schedule SET state = 1 WHERE id = #{scheduleId}
     </update>
 
     <select id="viewScheduleByGnameYear" parameterType="int" resultMap="schedule">

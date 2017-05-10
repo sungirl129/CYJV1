@@ -13,7 +13,7 @@
 </head>
 <body>
 <iframe src="/admin/adminTop" width="100%" height="10%"></iframe>
-<iframe src="/admin/adminLeft" width="20%" height="89%"></iframe>
-<iframe src="/admin/adminRight" width="78%" height="89%" name="adminRight"></iframe>
+<iframe src="/admin/adminLeft" width="18%" height="89%"></iframe>
+<iframe src="/admin/adminRight" width="80%" height="89%" name="adminRight"></iframe>
 </body>
 </html>

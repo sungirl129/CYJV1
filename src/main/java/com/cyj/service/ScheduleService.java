@@ -24,6 +24,18 @@ public class ScheduleService {
         return scheduleDao.findModelById(id);
     }
 
+    public boolean addPlan(int goodsId, int buyNumber) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        boolean sign = true;
+        ScheduleModel scheduleModel = getUnpublishedModelByGoodsId(goodsId);
+        if(scheduleModel != null) {
+            sign = addBuyNumber(buyNumber,timestamp,scheduleModel);
+        } else {
+            sign = insertSchedule(goodsId,buyNumber);
+        }
+        return sign;
+    }
+
     //根据goods_id得到未发布的采购计划
     public ScheduleModel getUnpublishedModelByGoodsId(int goodsId) {
         return scheduleDao.getUnpublishedModelByGoodsId(goodsId);
@@ -38,13 +50,14 @@ public class ScheduleService {
     }
 
     //插入计划表
-    public boolean insertSchedule(int goodsId, int buyNumber, Timestamp time) {
+    public boolean insertSchedule(int goodsId, int buyNumber) {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         ScheduleModel model = new ScheduleModel();
         model.setGoodsId(goodsId);
         model.setBuyNumber(buyNumber);
         model.setIsPublish(0);
         model.setScheduleState(0);
-        model.setScheduleDate(time);
+        model.setScheduleDate(timestamp);
         return (scheduleDao.insertScheduleModel(model)==1);
     }
 

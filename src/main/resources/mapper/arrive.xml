@@ -17,8 +17,8 @@
     </select>
 
     <insert id="insertArriveItem" parameterType="com.cyj.model.ArriveModel">
-        INSERT arrive(order_id,arrive_number,goods_state,bad_number,arriver_date)
-        VALUES (#{orderId},#{arriverNumber},#{goodsState},#{badNumber},#{arriverDate})
+        INSERT arrive(order_id,arrive_number,goods_state,bad_number,arrive_date)
+        VALUES (#{orderId},#{arriveNumber},#{goodsState},#{badNumber},#{arriveDate})
     </insert>
 
 </mapper>

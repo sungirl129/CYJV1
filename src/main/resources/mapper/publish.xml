@@ -27,7 +27,7 @@
 
     <insert id="insertPublishItem" parameterType="com.cyj.model.PublishModel" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO publish (schedule_id,goods_id,publish_number,apply_number,state,date)
-        VALUES (#{id}, #{goodsId}, #{publishNumber}, #{applyNumber}, #{publishState}, #{publishDate})
+        VALUES (#{scheduleId}, #{goodsId}, #{publishNumber}, #{applyNumber}, #{publishState}, #{publishDate})
     </insert>
 
     <select id="getPublishTotalCountByState" resultMap="publish" parameterType="int">

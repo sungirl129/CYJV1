@@ -4,6 +4,7 @@ import com.cyj.model.ApplicationModel;
 import com.cyj.model.PublishModel;
 import com.cyj.model.SupplierModel;
 import com.cyj.service.ApplicationService;
+import com.cyj.service.OrderService;
 import com.cyj.service.PublishService;
 import com.cyj.service.SupplierService;
 import com.cyj.tools.PageUtil;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.logging.Logger;
 
 /**
  * Created by Administrator on 2017/4/3.
@@ -21,12 +23,15 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/supplier")
 public class SupplierController {
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
     @Resource
     private PublishService publishService;
     @Resource
     private ApplicationService applicationService;
     @Resource
     private SupplierService supplierService;
+    @Resource
+    private OrderService orderService;
 
     @RequestMapping("/supplierMain")
     public String supplierMain(Model model) {
@@ -92,6 +97,7 @@ public class SupplierController {
         int pageSize = 4;
         SupplierModel smodel = (SupplierModel)request.getSession().getAttribute("supplier");
         int supplierId = smodel.getId();
+        //logger.info("supplierId:===================================" + supplierId);
         PageUtil nowPage = applicationService.viewMyApplication(pageNum, pageSize,supplierId);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);
@@ -103,7 +109,8 @@ public class SupplierController {
         int pageSize = 4;
         SupplierModel smodel = (SupplierModel)request.getSession().getAttribute("supplier");
         int supplierId = smodel.getId();
-        PageUtil nowPage = applicationService.viewOnePageMyOrder(pageNum,pageSize,supplierId,0);
+        logger.info("supplierId:=================" + supplierId);
+        PageUtil nowPage = orderService.viewOnePageMyOrder(pageNum,pageSize,supplierId,0);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);
         return "supplier/processingOrder";
@@ -114,7 +121,7 @@ public class SupplierController {
         int pageSize = 4;
         SupplierModel smodel = (SupplierModel)request.getSession().getAttribute("supplier");
         int supplierId = smodel.getId();
-        PageUtil nowPage = applicationService.viewOnePageMyOrder(pageNum,pageSize,supplierId,1);
+        PageUtil nowPage = orderService.viewOnePageMyOrder(pageNum,pageSize,supplierId,1);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage", nowPage);
         return "supplier/purchaseHistory";

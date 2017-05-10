@@ -18,7 +18,7 @@
     </select>
 
     <insert id="insertItem" parameterType="com.cyj.model.StatisticsModel" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO statisics (goods_id, year, month, purchase_number, apply_number, state)
+        INSERT INTO statistics (goods_id, year, month, purchase_number, apply_number, state)
         VALUES (#{goodsId}, #{year}, #{month}, #{purchaseNumber}, #{applyNumber}, #{state})
     </insert>
 

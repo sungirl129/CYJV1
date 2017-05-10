@@ -33,8 +33,8 @@
     </update>
 
     <insert id="insertItem" parameterType="com.cyj.model.ApplicationModel" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO application (publish_id,schedule_id,supplier_id,supply_number,price,valid,state,date)
-        VALUES (#{publishId}, #{scheduleId}, #{supplierId}, #{supplyNumber}, #{price}, #{valid}, #{applicationState}, #{applicationDate})
+        INSERT INTO application (publish_id,schedule_id,supplier_id,goods_id,supply_number,price,valid,state,date)
+        VALUES (#{publishId}, #{scheduleId}, #{supplierId}, #{goodsId}, #{supplyNumber}, #{price}, #{valid}, #{applicationState}, #{applicationDate})
     </insert>
 
     <select id="viewMyApplicationByState" parameterType="int" resultMap="application">

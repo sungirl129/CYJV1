@@ -30,7 +30,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search" name="condition">
+                    <input style="width: 100px;" type="text" class="form-control" placeholder="Search" name="condition">
                 </div>
                 <div class="form-group">
                     <select name="stock" class="form-control">
@@ -39,13 +39,13 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="number" class="form-control" placeholder="最小库存" name="stockL">
+                    <input style="width: 100px;" type="number" class="form-control" placeholder="最小库存" name="stockL">
                 </div>
                 <div class="form-group">
                     <span class="form-control">至</span>
                 </div>
                 <div class="form-group">
-                    <input type="number" class="form-control" placeholder="最大库存" name="stockR">
+                    <input style="width: 100px;" type="number" class="form-control" placeholder="最大库存" name="stockR">
                 </div>
                 <button type="submit" class="btn btn-default">搜索</button>
                 <a target="_blank" onclick="exportExcel(this,'stockForm','/admin/exportStock')" class="btn btn-default">导出</a>

@@ -18,7 +18,7 @@
 <div class="list-group">
     <a href="/admin/viewStock?pageNo=1" class="list-group-item" target="adminRight">查看库存</a>
     <a href="/admin/makePurchasePlan?pageNum=1" class="list-group-item" target="adminRight">制定采购计划</a>
-    <a href="/admin/viewUnpostSchedule?pageNo=1" class="list-group-item" target="adminRight">计划单管理</a>
+    <a href="/admin/manageSchedule?pageNo=1" class="list-group-item" target="adminRight">计划单管理</a>
     <a href="/admin/viewPublish?pageNumber=1&type=0" class="list-group-item" target="adminRight">发布信息管理</a>
     <a href="/admin/viewApplication?pageNum=1" class="list-group-item" target="adminRight">申请单管理</a>
     <a href="/admin/processingOrder?pageNum=1" class="list-group-item" target="adminRight">订单管理</a>
