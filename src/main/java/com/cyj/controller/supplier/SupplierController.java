@@ -93,12 +93,19 @@ public class SupplierController {
     }
 
     @RequestMapping("/myApplication")
-    public String myApplication(Model model,@RequestParam(value = "pageNum",defaultValue = "1",required = false) int pageNum, HttpServletRequest request) {
+    public String myApplication(Model model,@RequestParam(value = "pageNum",defaultValue = "1",required = false) int pageNum,
+                                @RequestParam(value = "type",defaultValue = "3",required = false) int type,
+                                HttpServletRequest request) {
         int pageSize = 4;
         SupplierModel smodel = (SupplierModel)request.getSession().getAttribute("supplier");
         int supplierId = smodel.getId();
         //logger.info("supplierId:===================================" + supplierId);
-        PageUtil nowPage = applicationService.viewMyApplication(pageNum, pageSize,supplierId);
+        PageUtil nowPage = null;
+        if(type == 3) {
+            nowPage = applicationService.viewMyApplication(pageNum, pageSize,supplierId);
+        } else {
+            nowPage = applicationService.viewMyApplicationByValid(pageNum, pageSize,supplierId,type);
+        }
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);
         return "supplier/myApplication";
@@ -109,7 +116,7 @@ public class SupplierController {
         int pageSize = 4;
         SupplierModel smodel = (SupplierModel)request.getSession().getAttribute("supplier");
         int supplierId = smodel.getId();
-        logger.info("supplierId:=================" + supplierId);
+       // logger.info("supplierId:=================" + supplierId);
         PageUtil nowPage = orderService.viewOnePageMyOrder(pageNum,pageSize,supplierId,0);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);

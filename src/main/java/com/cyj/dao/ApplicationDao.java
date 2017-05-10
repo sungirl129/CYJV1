@@ -15,8 +15,10 @@ public interface ApplicationDao {
     ApplicationModel findModelById(int id);
     int insertItem(ApplicationModel applicationModel);
     List<ApplicationModel> viewMyApplicationByState(@Param("supplierId")int supplierId, @Param("state")int state);
+    List<ApplicationModel> viewMyApplicationByStateValid(@Param("supplierId")int supplierId, @Param("state")int state, @Param("valid")int valid);
     List<ApplicationModel> viewOnePageMyApplicationByState(@Param("supplierId")int supplierId, @Param("state")int state, @Param("offset")int offset, @Param("pageSize")int pageSize);
     List<ApplicationModel> getItemBySupplierIdAndValid(@Param("supplierId") int supplierId, @Param("valid") int valid);
+    List<ApplicationModel> viewOnePageMyApplicationByValid(@Param("supplierId") int supplierId, @Param("valid") int valid, @Param("offset")int offset, @Param("pageSize")int pageSize);
 }
 
 

@@ -28,6 +28,7 @@
                        <p>单价：${item.get("applicationModel").price}</p>
                        <p>到货数量:${item.get("orderModel").acceptNumber}</p>
                        <p>已付款金额:${item.get("orderModel").payedMoney}</p>
+                       <a href="/admin/orderDetail?orderId=${item.get("orderModel").id}&type=2" class="btn">详情</a>
                    </div>
                </div>
            </div>

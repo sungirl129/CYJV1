@@ -40,6 +40,11 @@ public class ApplicationDaoImpl implements ApplicationDao{
         return sqlSession.getMapper(ApplicationDao.class).viewMyApplicationByState(supplierId, state);
     }
 
+    @Override
+    public List<ApplicationModel> viewMyApplicationByStateValid(@Param("supplierId") int supplierId, @Param("state") int state, @Param("valid") int valid) {
+        return sqlSession.getMapper(ApplicationDao.class).viewMyApplicationByStateValid(supplierId, state, valid);
+    }
+
     public List<ApplicationModel> viewOnePageMyApplicationByState(@Param("supplierId") int supplierId, @Param("state") int state, @Param("offset") int offset, @Param("pageSize") int pageSize) {
         return sqlSession.getMapper(ApplicationDao.class).viewOnePageMyApplicationByState(supplierId, state, offset, pageSize);
     }
@@ -47,5 +52,10 @@ public class ApplicationDaoImpl implements ApplicationDao{
 
     public List<ApplicationModel> getItemBySupplierIdAndValid(@Param("supplierId") int supplierId, @Param("valid") int valid) {
         return sqlSession.getMapper(ApplicationDao.class).getItemBySupplierIdAndValid(supplierId, valid);
+    }
+
+    @Override
+    public List<ApplicationModel> viewOnePageMyApplicationByValid(@Param("supplierId") int supplierId, @Param("valid") int valid, @Param("offset") int offset, @Param("pageSize") int pageSize) {
+        return sqlSession.getMapper(ApplicationDao.class).viewOnePageMyApplicationByValid(supplierId, valid, offset, pageSize);
     }
 }

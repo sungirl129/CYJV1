@@ -83,7 +83,11 @@ public class ApplicationService {
 
     public int viewMyTotalCountByState(int supplierId, int state) {
         List<ApplicationModel> list = applicationDao.viewMyApplicationByState(supplierId, state);
-        //System.out.println("totalSize:=============" + list.size());
+        return list.size();
+    }
+
+    public int viewMyTotalCountByStateValid(int supplierId, int state, int valid) {
+        List<ApplicationModel> list = applicationDao.viewMyApplicationByStateValid(supplierId, state, valid);
         return list.size();
     }
 
@@ -109,6 +113,41 @@ public class ApplicationService {
                 default:break;
             }
             Map<String,Object> map = new HashMap<String,Object>();
+            map.put("applicationModel", applicationModel);
+            int publishId = applicationModel.getPublishId();
+            PublishModel publishModel = publishService.findModelById(publishId);
+            int goodsId = publishModel.getGoodsId();
+            GoodsModel goodsModel = stockService.findGoodsModelByGoodsId(goodsId);
+            map.put("goodsModel", goodsModel);
+            list.add(map);
+        }
+        PageUtil page = new PageUtil(pageSize, totalCount);
+        page.setData(list);
+        page.setPageNumber(pageNum);
+        return page;
+    }
+
+    //供货商查看自己的申请单
+    public PageUtil viewMyApplicationByValid(int pageNum, int pageSize, int supplierId, int valid) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        int totalCount = viewMyTotalCountByStateValid(supplierId, 0, valid);
+        int offset = (pageNum - 1) * pageSize;
+        List<ApplicationModel> applicationModelList = applicationDao.viewOnePageMyApplicationByValid(supplierId, valid, offset, pageSize);
+        for(ApplicationModel applicationModel: applicationModelList) {
+            switch (valid) {
+                case 0:
+                    applicationModel.setStrValid("暂未审批");
+                    break;
+                case 1:
+                    applicationModel.setStrValid("审批通过");
+                    break;
+                case 2:
+                    applicationModel.setStrValid("不通过");
+                    break;
+                default:
+                    break;
+            }
+            Map<String,Object> map = new HashMap<>();
             map.put("applicationModel", applicationModel);
             int publishId = applicationModel.getPublishId();
             PublishModel publishModel = publishService.findModelById(publishId);

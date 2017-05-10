@@ -390,7 +390,7 @@ public class AdminController {
     }
 
     @RequestMapping("/orderDetail")
-    public String orderDetail(Model model, int orderId) {
+    public String orderDetail(Model model, int orderId, int type) {
         OrderModel orderModel = orderService.findModelById(orderId);
         model.addAttribute("orderModel",orderModel);
         int applicationId = orderModel.getApplicationId();
@@ -408,10 +408,13 @@ public class AdminController {
         model.addAttribute("arrivePage", arrivePage);
         PageUtil payPage = payService.viewPayInfoByOrderId(orderId);
         model.addAttribute("payPage", payPage);
-        return "admin/order/orderDetail";
-    }
+        if(type == 1) {
+            return "admin/order/orderDetail";
+        } else {
+            return "admin/order/historyOrderDetail";
+        }
 
-    @Transactional
+    }   @Transactional
     @RequestMapping("/goodsArrive")
     public String goodsArrive(Model model, int orderId, int arriveNumber, int goodsState, int badNumber, int returnedQuantity) throws Exception {
         ArriveModel arriveModel = new ArriveModel();
