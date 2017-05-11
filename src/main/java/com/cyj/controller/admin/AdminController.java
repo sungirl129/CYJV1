@@ -413,8 +413,9 @@ public class AdminController {
         } else {
             return "admin/order/historyOrderDetail";
         }
+    }
 
-    }   @Transactional
+    @Transactional
     @RequestMapping("/goodsArrive")
     public String goodsArrive(Model model, int orderId, int arriveNumber, int goodsState, int badNumber, int returnedQuantity) throws Exception {
         ArriveModel arriveModel = new ArriveModel();

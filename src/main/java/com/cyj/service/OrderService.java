@@ -144,6 +144,4 @@ public class OrderService {
         List<OrderModel> orderModelList = orderDao.getItemBySupplierIdAndState(supplierId, state);
         return orderModelList.size();
     }
-
-
 }

@@ -1,12 +1,7 @@
 package com.cyj.controller.supplier;
 
-import com.cyj.model.ApplicationModel;
-import com.cyj.model.PublishModel;
-import com.cyj.model.SupplierModel;
-import com.cyj.service.ApplicationService;
-import com.cyj.service.OrderService;
-import com.cyj.service.PublishService;
-import com.cyj.service.SupplierService;
+import com.cyj.model.*;
+import com.cyj.service.*;
 import com.cyj.tools.PageUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +27,12 @@ public class SupplierController {
     private SupplierService supplierService;
     @Resource
     private OrderService orderService;
+    @Resource
+    private StockService stockService;
+    @Resource
+    private ArriveService arriveService;
+    @Resource
+    private PayService payService;
 
     @RequestMapping("/supplierMain")
     public String supplierMain(Model model) {
@@ -121,6 +122,28 @@ public class SupplierController {
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);
         return "supplier/processingOrder";
+    }
+
+    @RequestMapping("/orderDetail")
+    public String orderDetail(Model model, int orderId) {
+        OrderModel orderModel = orderService.findModelById(orderId);
+        model.addAttribute("orderModel", orderModel);
+        int applicationId = orderModel.getApplicationId();
+        ApplicationModel applicationModel = applicationService.findModelById(applicationId);
+        model.addAttribute("applicationModel", applicationModel);
+        int supplierId = applicationModel.getSupplierId();
+        SupplierModel supplierModel = supplierService.findModelById(supplierId);
+        model.addAttribute("supplierModel", supplierModel);
+        int publishId = applicationModel.getPublishId();
+        PublishModel publishModel = publishService.findModelById(publishId);
+        int goodsId = publishModel.getGoodsId();
+        GoodsModel goodsModel = stockService.findGoodsModelByGoodsId(goodsId);
+        model.addAttribute("goodsModel", goodsModel);
+        PageUtil arrivePage = arriveService.viewArriveInfoByOrderId(orderId);
+        model.addAttribute("arrivePage", arrivePage);
+        PageUtil payPage = payService.viewPayInfoByOrderId(orderId);
+        model.addAttribute("payPage", payPage);
+        return "supplier/order/historyOrderDetail";
     }
 
     @RequestMapping("/purchaseHistory")

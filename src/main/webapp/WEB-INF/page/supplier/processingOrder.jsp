@@ -30,6 +30,7 @@
                         <p>单价:${item.get("applicationModel").price}</p>
                         <p>到货数量:${item.get("orderModel").acceptNumber}</p>
                         <p>已付款金额:${item.get("orderModel").payedMoney}</p>
+                        <a href="/supplier/orderDetail?orderId=${item.get("orderModel").id}" class="btn">详情</a>
                     </div>
                 </div>
             </div>
