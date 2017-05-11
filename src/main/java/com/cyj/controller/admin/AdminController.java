@@ -390,7 +390,7 @@ public class AdminController {
     }
 
     @RequestMapping("/orderDetail")
-    public String orderDetail(Model model, int orderId, int type) {
+    public String orderDetail(Model model, int orderId, @RequestParam(value = "type", defaultValue = "1", required = false) int type) {
         OrderModel orderModel = orderService.findModelById(orderId);
         model.addAttribute("orderModel",orderModel);
         int applicationId = orderModel.getApplicationId();
