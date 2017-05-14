@@ -12,6 +12,51 @@ public class ArriveModel {
     private int goodsState;
     private int badNumber;
     private Timestamp arriveDate;
+    private int processWay;
+    private int exchangeNumber;
+    private String strGoodsState;
+    private int returnedNumber;
+    private String strProcessWay;
+
+    public int getReturnedNumber() {
+        return returnedNumber;
+    }
+
+    public void setReturnedNumber(int returnedNumber) {
+        this.returnedNumber = returnedNumber;
+    }
+
+    public String getStrProcessWay() {
+        return strProcessWay;
+    }
+
+    public void setStrProcessWay(String strProcessWay) {
+        this.strProcessWay = strProcessWay;
+    }
+
+    public String getStrGoodsState() {
+        return strGoodsState;
+    }
+
+    public void setStrGoodsState(String strGoodsState) {
+        this.strGoodsState = strGoodsState;
+    }
+
+    public int getProcessWay() {
+        return processWay;
+    }
+
+    public void setProcessWay(int processWay) {
+        this.processWay = processWay;
+    }
+
+    public int getExchangeNumber() {
+        return exchangeNumber;
+    }
+
+    public void setExchangeNumber(int exchangeNumber) {
+        this.exchangeNumber = exchangeNumber;
+    }
 
     public int getId() {
         return id;

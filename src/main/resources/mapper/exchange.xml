@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.ExchangeDao">
+    <resultMap id="exchange" type="com.cyj.model.ExchangeModel">
+        <id column="id" property="id"/>
+        <result column="order_id" property="orderId"/>
+        <result column="arrive_id" property="arriveId"/>
+        <result column="exchange_number" property="exchangeNumber"/>
+        <result column="is_arrive" property="isArrive"/>
+        <result column="goods_state" property="goodsState"/>
+        <result column="state" property="state"/>
+    </resultMap>
+    <insert id="insertItem" parameterType="com.cyj.model.ExchangeModel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO exchange (order_id, arrive_id,exchange_number,is_arrive,goods_state,state)
+        VALUES (#{orderId},#{arriveId},#{exchangeNumber},0,0,0)
+    </insert>
+</mapper>
+

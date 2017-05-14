@@ -9,6 +9,5 @@ import java.util.List;
  */
 public interface ArriveDao {
     List<ArriveModel> getModelListByOrderId(int orderId);
-
     int insertArriveItem(ArriveModel arriveModel);
 }

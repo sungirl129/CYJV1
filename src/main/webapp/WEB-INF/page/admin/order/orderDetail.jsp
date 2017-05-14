@@ -13,9 +13,21 @@
     <link rel="stylesheet" href="/resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
     <script src="/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <script>
+        function show() {
+            var div1 = document.getElementById("badNumDiv");
+            var div2 = document.getElementById("processWayDiv");
+            div1.style.display = 'block';
+            div2.style.display = 'block';
+        }
+
+        function mix() {
+            var div1 = document.getElementById("mixDiv");
+            div1.style.display = 'block';
+        }
+    </script>
 </head>
 <body>
-
 <a class="btn btn-primary" role="button" data-toggle="collapse" href="#order" aria-expanded="false" aria-controls="collapseExample">
     订单信息
 </a>
@@ -81,13 +93,19 @@
         <td>货物审查</td>
         <td>不合格数量</td>
         <td>到货日期</td>
+        <td>货物处理方式</td>
+        <td>退货数量</td>
+        <td>换货数量</td>
     </tr>
     <c:forEach var="item" items="${arrivePage.data}">
         <tr>
             <td>${item.arriveNumber}</td>
-            <td>${item.goodsState}</td>
+            <td>${item.strGoodsState}</td>
             <td>${item.badNumber}</td>
             <td>${item.arriveDate}</td>
+            <td>${item.strProcessWay}</td>
+            <td>${item.returnedNumber}</td>
+            <td>${item.exchangeNumber}</td>
         </tr>
     </c:forEach>
 </table>
@@ -130,12 +148,13 @@
                     <div class="form-group">
                         <label for="checkGoods" class="col-sm-3 control-label">货物审核</label>
                         <div class="col-sm-4" id="checkGoods">
-                            <input type="radio" name="goodsState" value="0" checked>未审查
+                            <%--<input type="radio" name="goodsState" value="0" checked>未审查--%>
                             <input type="radio" name="goodsState" value="1">全部合格
-                            <input type="radio" name="goodsState" value="2">部分不合格
+                            <input type="radio" name="goodsState" value="2" onclick="show()">部分不合格
                         </div>
                     </div>
-                    <div class="modal-body">
+
+                    <div class="modal-body" id="badNumDiv" style="display: none">
                         <div class="form-group">
                             <label for="badNum" class="col-sm-3 control-label">不合格数量</label>
                             <div class="col-sm-4">
@@ -143,12 +162,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-body">
+                    <div class="form-group" id="processWayDiv" style="display: none">
+                        <label for="processGoods" class="col-sm-3 control-label">不合格货物处理：</label>
+                        <div class="col-sm-4" id="processGoods">
+                            <%--<input type="radio" name="goodsState" value="0" checked>未审查--%>
+                            <input type="radio" name="processWay" value="1">换货
+                            <input type="radio" name="processWay" value="2">退货
+                            <input type="radio" name="processWay" value="3" onclick="mix()">退换货
+                        </div>
+                    </div>
+                    <div class="modal-body" id="mixDiv" style="display: none">
                         <div class="form-group">
-                            <label for="returnNum" class="col-sm-3 control-label">退货数量</label>
+                            <label for="changeNum" class="col-sm-3 control-label">换货数量</label>
                             <div class="col-sm-4">
-                                <input type="number" class="form-control" id="returnNum" name="returnedQuantity" value="0">
+                                <input type="number" class="form-control" id="changeNum" name="changeNum" value="0">
                             </div>
+                            <p>其余退货</p>
                         </div>
                     </div>
                 </div>

@@ -81,13 +81,19 @@
         <td>货物审查</td>
         <td>不合格数量</td>
         <td>到货日期</td>
+        <td>货物处理方式</td>
+        <td>退货数量</td>
+        <td>换货数量</td>
     </tr>
     <c:forEach var="item" items="${arrivePage.data}">
         <tr>
             <td>${item.arriveNumber}</td>
-            <td>${item.goodsState}</td>
+            <td>${item.strGoodsState}</td>
             <td>${item.badNumber}</td>
             <td>${item.arriveDate}</td>
+            <td>${item.strProcessWay}</td>
+            <td>${item.returnedNumber}</td>
+            <td>${item.exchangeNumber}</td>
         </tr>
     </c:forEach>
 </table>

@@ -19,8 +19,8 @@
         SELECT * FROM `purchasemanage`.`order` WHERE id = #{id}
     </select>
     <insert id="insertOrder" parameterType="com.cyj.model.OrderModel" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `purchasemanage`.`order` (application_id,goods_id,supplier_id,valid_date,accept_number,payed_money,state)
-        VALUES (#{applicationId},#{goodsId},#{supplierId}, #{validDate},#{acceptNumber},#{payedMoney},#{orderState})
+        INSERT INTO `purchasemanage`.`order` (application_id,goods_id,supplier_id,valid_date,accept_number,returned_number,payed_money,state)
+        VALUES (#{applicationId},#{goodsId},#{supplierId}, #{validDate},#{acceptNumber},0,#{payedMoney},#{orderState})
     </insert>
 
     <select id="getAllOrderByState" parameterType="int" resultMap="order">
@@ -54,5 +54,8 @@
     <select id="getOnePageOrderBySupplierIdandState" resultMap="order">
         SELECT * FROM `purchasemanage`.`order` WHERE supplier_id = #{supplierId} AND state = #{state} limit #{offset}, #{pageSize}
     </select>
+    <update id="updateReturnedNumber" parameterType="int">
+        UPDATE `purchasemanage`.`order` SET returned_number = #{returnedNumber} WHERE id = #{id}
+    </update>
 </mapper>
 

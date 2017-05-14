@@ -56,4 +56,9 @@ public class OrderDaoImpl implements OrderDao{
     public List<OrderModel> getOnePageOrderBySupplierIdandState(@Param("supplierId") int supplierId, @Param("state") int state, @Param("offset") int offset, @Param("pageSize") int pageSize) {
         return sqlSession.getMapper(OrderDao.class).getOnePageOrderBySupplierIdandState(supplierId, state, offset, pageSize);
     }
+
+    @Override
+    public int updateReturnedNumber(@Param("returnedNumber") int returnedNumber, @Param("id") int id) {
+        return sqlSession.getMapper(OrderDao.class).updateReturnedNumber(returnedNumber, id);
+    }
 }

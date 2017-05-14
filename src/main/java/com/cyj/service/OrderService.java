@@ -91,7 +91,10 @@ public class OrderService {
     }
 
     public boolean SupplyNumberEqualsArriveNumber(int orderId) {
-        int totalArriveNumber = arriveService.getTotalArriveNumberByOrderId(orderId);
+        OrderModel orderModel = orderDao.findModelById(orderId);
+        int acceptNumber = orderModel.getAcceptNumber();
+        int returnedNumber = orderModel.getReturnedNumber();
+        int totalArriveNumber = acceptNumber + returnedNumber;
         int applicationId = getApplicationIdByOrderId(orderId);
         ApplicationModel applicationModel = applicationService.findModelById(applicationId);
         int supplyNumber = applicationModel.getSupplyNumber();
@@ -143,5 +146,9 @@ public class OrderService {
     public int getMyOrderTotalCount(int supplierId, int state) {
         List<OrderModel> orderModelList = orderDao.getItemBySupplierIdAndState(supplierId, state);
         return orderModelList.size();
+    }
+
+    public boolean setReturnedNumber(int returnedNumber, int id) {
+        return (orderDao.updateReturnedNumber(returnedNumber, id) == 1);
     }
 }

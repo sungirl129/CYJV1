@@ -19,4 +19,5 @@ public interface OrderDao {
     OrderModel findModelByApplicationId(int applicationId);
     List<OrderModel> getItemBySupplierIdAndState(@Param("supplierId")int supplierId, @Param("state") int state);
     List<OrderModel> getOnePageOrderBySupplierIdandState(@Param("supplierId")int supplierId, @Param("state") int state, @Param("offset")int offset, @Param("pageSize") int pageSize);
+    int updateReturnedNumber(@Param("returnedNumber")int returnedNumber, @Param("id")int id);
 }

@@ -64,6 +64,8 @@ public class AdminController {
     private AdminService adminService;
     @Resource
     private StatisticsService statisticsService;
+    @Resource
+    private ExchangeService exchangeService;
 
     @RequestMapping("/adminMain")
     public String adminMain(Model model) {
@@ -417,23 +419,47 @@ public class AdminController {
 
     @Transactional
     @RequestMapping("/goodsArrive")
-    public String goodsArrive(Model model, int orderId, int arriveNumber, int goodsState, int badNumber, int returnedQuantity) throws Exception {
+    public String goodsArrive(Model model, int orderId, int arriveNumber, int goodsState,
+                              @RequestParam(value = "badNumber", defaultValue = "0", required = false) int badNumber,
+                              @RequestParam(value = "processWay", defaultValue = "0", required = false) int processWay,
+                              @RequestParam(value = "changeNum", defaultValue = "0", required = false) int changeNum) throws Exception {
         ArriveModel arriveModel = new ArriveModel();
         arriveModel.setOrderId(orderId);
         arriveModel.setArriveNumber(arriveNumber);
         arriveModel.setGoodsState(goodsState);
         arriveModel.setBadNumber(badNumber);
-        if(!arriveService.insertArriveItem(arriveModel)) throw new Exception("error");
-        if(!orderService.goodsArriveChangeAcceptNumber(orderId, arriveNumber-badNumber)) throw new Exception("error");
+        arriveModel.setProcessWay(processWay);
         if(goodsState == 2) {
-            RejectedModel rejectedModel = new RejectedModel();
-            rejectedModel.setArriveId(orderId);
-            rejectedModel.setReturnedQuantity(returnedQuantity);
-            if(!rejectedService.insertItem(rejectedModel)) throw new Exception("error");
-
-            int applicationId = orderService.getApplicationIdByOrderId(orderId);
-            int publishId = applicationService.getPublishIdById(applicationId);
-            if(!publishService.returnGoodsChangePulish(publishId,returnedQuantity)) throw new Exception("error");
+            if(processWay == 1) {
+                arriveModel.setExchangeNumber(badNumber);
+            } else if(processWay == 3) {
+                arriveModel.setExchangeNumber(changeNum);
+            }
+        }
+        if(!arriveService.insertArriveItem(arriveModel)) throw new Exception("error");
+        int arriveId = arriveModel.getId();
+       // logger.info("arrive_id:==============================" + arriveId);
+        if(!orderService.goodsArriveChangeAcceptNumber(orderId, arriveNumber-badNumber)) throw new Exception("error");
+        int applicationId = orderService.getApplicationIdByOrderId(orderId);
+        int publishId = applicationService.getPublishIdById(applicationId);
+        if(goodsState == 2) {
+           // logger.info("processWay:==============================" + processWay);
+            if(processWay == 1) {
+              //  logger.info("换货==================================");
+                if(!exchangeService.insertItem(orderId, arriveId, badNumber)) throw new Exception("error");
+            } else if(processWay == 2) {
+                //表rejected插入记录
+               // logger.info("退货==================================");
+                if(!rejectedService.insertItem(orderId,badNumber)) throw new Exception("error");
+                if(!orderService.setReturnedNumber(badNumber,orderId)) throw new Exception("error");
+                if(!publishService.returnGoodsChangePulish(publishId,badNumber)) throw new Exception("error");
+            } else if(processWay == 3) {
+                //logger.info("退换货==================================");
+                if(!exchangeService.insertItem(orderId, arriveId, changeNum)) throw new Exception("error");
+                if(!rejectedService.insertItem(orderId, badNumber-changeNum)) throw new Exception("error");
+                if(!orderService.setReturnedNumber(badNumber-changeNum, orderId)) throw new Exception("error");
+                if(!publishService.returnGoodsChangePulish(publishId,badNumber-changeNum)) throw new Exception("error");
+            }
         }
         String url = "redirect:/admin/orderDetail?orderId=" + orderId;
         return url;
@@ -609,9 +635,6 @@ public class AdminController {
             return "admin/statistics/viewStatistics";
         }
     }
-
-
-
 
 
 //    @RequestMapping("/statistics")

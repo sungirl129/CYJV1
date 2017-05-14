@@ -20,4 +20,13 @@ public class RejectedService {
         rejectedModel.setReturnedDate(timestamp);
         return (rejectedDao.insertItem(rejectedModel) == 1);
     }
+    public boolean insertItem(int orderId, int returnedNumber) {
+        RejectedModel rejectedModel = new RejectedModel();
+        rejectedModel.setArriveId(orderId);
+        rejectedModel.setReturnedQuantity(returnedNumber);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        rejectedModel.setReturnedDate(timestamp);
+        return insertItem(rejectedModel);
+    }
+
 }

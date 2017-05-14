@@ -12,8 +12,17 @@ public class OrderModel {
     private int supplierId;
     private Timestamp validDate;
     private int acceptNumber;
+    private int returnedNumber;
     private double payedMoney;
     private int orderState;
+
+    public int getReturnedNumber() {
+        return returnedNumber;
+    }
+
+    public void setReturnedNumber(int returnedNumber) {
+        this.returnedNumber = returnedNumber;
+    }
 
     public int getGoodsId() {
         return goodsId;

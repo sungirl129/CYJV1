@@ -11,14 +11,16 @@
         <result column="goods_state" property="goodsState"/>
         <result column="bad_number" property="badNumber"/>
         <result column="arrive_date" property="arriveDate"/>
+        <result column="process_way" property="processWay"/>
+        <result column="exchange_number" property="exchangeNumber"/>
     </resultMap>
     <select id="getModelListByOrderId" parameterType="int" resultMap="arrive">
         SELECT * FROM arrive WHERE order_id = #{orderId}
     </select>
 
-    <insert id="insertArriveItem" parameterType="com.cyj.model.ArriveModel">
-        INSERT arrive(order_id,arrive_number,goods_state,bad_number,arrive_date)
-        VALUES (#{orderId},#{arriveNumber},#{goodsState},#{badNumber},#{arriveDate})
+    <insert id="insertArriveItem" useGeneratedKeys="true" keyProperty="id" parameterType="com.cyj.model.ArriveModel">
+        INSERT arrive(order_id,arrive_number,goods_state,bad_number,arrive_date,process_way,exchange_number)
+        VALUES (#{orderId},#{arriveNumber},#{goodsState},#{badNumber},#{arriveDate},#{processWay},#{exchangeNumber})
     </insert>
 
 </mapper>
