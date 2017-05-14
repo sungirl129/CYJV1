@@ -66,6 +66,8 @@ public class AdminController {
     private StatisticsService statisticsService;
     @Resource
     private ExchangeService exchangeService;
+    @Resource
+    private PredictService predictService;
 
     @RequestMapping("/adminMain")
     public String adminMain(Model model) {
@@ -675,7 +677,8 @@ public class AdminController {
 
     @RequestMapping("/predict")
     public String predict(Model model) {
-
+        int[] plan = predictService.predict();
+        model.addAttribute("plan", plan);
         return "admin/predict/predict";
     }
 
