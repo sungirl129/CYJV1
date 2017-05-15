@@ -10,6 +10,7 @@
 <head>
     <title>主页</title>
     <link rel="stylesheet" type="text/css" href="/resources/css/home.css">
+    <link rel="stylesheet" type="text/css" href="/resources/css/homeTop.css">
 </head>
 <body>
 <marquee>欢迎进入！</marquee>

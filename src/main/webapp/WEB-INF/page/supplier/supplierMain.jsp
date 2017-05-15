@@ -12,8 +12,8 @@
     <link rel="stylesheet" type="text/css" href="/resources/css/home.css">
 </head>
 <body>
-<iframe src="/supplier/supplierTop" width="100%" height="10%"></iframe>
-<iframe src="/supplier/supplierLeft" width="20%" height="89%"></iframe>
-<iframe src="/supplier/supplierRight" width="78%" height="89%" name="supplierRight"></iframe>
+<iframe src="/supplier/supplierTop" width="100%" height="10%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<iframe src="/supplier/supplierLeft" width="20%" height="90%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<iframe src="/supplier/supplierRight" width="78%" height="90%" name="supplierRight" frameborder="no" border="0" marginwidth="0" marginheight="0"></iframe>
 </body>
 </html>

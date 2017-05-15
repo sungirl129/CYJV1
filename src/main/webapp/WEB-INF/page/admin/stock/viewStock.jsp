@@ -17,8 +17,6 @@
     <script src="/resources/js/export.js"></script>
 </head>
 <body>
-
-<h3 style="text-align: center">库存信息</h3>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

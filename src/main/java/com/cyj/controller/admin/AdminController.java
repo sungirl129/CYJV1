@@ -209,7 +209,8 @@ public class AdminController {
     }
 
     @RequestMapping("/manageSchedule")
-    public String manageSchedule(Model model, @RequestParam(value = "type",defaultValue = "0",required = false)int type, @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo) {
+    public String manageSchedule(Model model, @RequestParam(value = "type",defaultValue = "0",required = false)int type,
+                                 @RequestParam(value = "pageNo",defaultValue = "1",required = false) int pageNo) {
         int pageSize = 8;
         PageUtil nowPage;
         String title;
@@ -283,7 +284,9 @@ public class AdminController {
 
 
     @RequestMapping("/viewPublish")
-    public String viewPublish(Model model, @RequestParam(value = "pageNumber",defaultValue = "1",required = false) int pageNumber, @RequestParam(value = "type",defaultValue = "0",required = false)int type) {
+    public String viewPublish(Model model,
+                              @RequestParam(value = "pageNumber",defaultValue = "1",required = false) int pageNumber,
+                              @RequestParam(value = "type",defaultValue = "0",required = false)int type) {
         String btnName = "取消发布";
         String title = "发布的采购信息";
         int state = 0;
@@ -321,7 +324,8 @@ public class AdminController {
     }
 
     @RequestMapping("/viewApplication")
-    public String viewApplication(Model model, @RequestParam(value = "pageNum",defaultValue = "1",required = false)int pageNum, @RequestParam(value = "type",defaultValue = "0",required = false)int type) {
+    public String viewApplication(Model model, @RequestParam(value = "pageNum",defaultValue = "1",required = false)int pageNum,
+                                  @RequestParam(value = "type",defaultValue = "0",required = false)int type) {
         int pageSize = 4;
         PageUtil nowPage = null;
         String title = "";
@@ -499,7 +503,7 @@ public class AdminController {
         PageUtil nowPage = orderService.viewOnePageOrderByState(pageNum, pageSize,1);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);
-        return "admin/historyOrder";
+        return "admin/order/historyOrder";
     }
 
     @RequestMapping("/manageSuppliers")

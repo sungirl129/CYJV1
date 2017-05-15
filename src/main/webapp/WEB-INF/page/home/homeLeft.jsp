@@ -9,15 +9,21 @@
 <html>
 <head>
     <title>homeLeft</title>
-    <link rel="stylesheet" href="/resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
-    <script src="/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/resources/AmazeUI-2.7.2/assets/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="/resources/AmazeUI-2.7.2/assets/css/app.css">
+    <script src="/resources/AmazeUI-2.7.2/assets/js/amazeui.min.js"></script>
+    <%--<link rel="stylesheet" href="/resources/amazeui/amazeui.tree.min.css"/>--%>
+    <%--<script src="/resources/amazeui/amazeui.tree.min.js"></script>--%>
 </head>
 <body>
-<div class="list-group">
-    <a href="/home/homeInfo" class="list-group-item" target="homeRight">主页</a>
-    <a href="/home/purchaseInfo" class="list-group-item" target="homeRight">采购信息</a>
-    <a href="/home/logIn" class="list-group-item" target="homeRight">登录管理</a>
-</div>
+<button class="am-btn am-btn-primary" data-am-collapse="{target: '#collapse-nav'}">菜单 <i class="am-icon-bars"></i></button>
+<nav>
+    <ul id="collapse-nav" class="am-nav am-collapse">
+        <li><a href="/home/homeInfo" class="list-group-item" target="homeRight">主页</a></li>
+        <li><a href="/home/purchaseInfo" class="list-group-item" target="homeRight">采购信息</a></li>
+        <li class="am-active"><a href="/home/logIn" class="list-group-item" target="homeRight">登录管理</a></li>
+    </ul>
+</nav>
 </body>
 </html>

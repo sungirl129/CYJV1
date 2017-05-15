@@ -12,8 +12,8 @@
     <link type="text/css" rel="stylesheet" href="/resources/css/home.css">
 </head>
 <body>
-<iframe src="/admin/adminTop" width="100%" height="10%"></iframe>
-<iframe src="/admin/adminLeft" width="18%" height="89%"></iframe>
-<iframe src="/admin/adminRight" width="80%" height="89%" name="adminRight"></iframe>
+<iframe src="/admin/adminTop" width="100%" height="10%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<iframe src="/admin/adminLeft" width="18%" height="90%" frameborder="no" border="0" marginwidth="0" marginheight="20" scrolling="no"></iframe>
+<iframe src="/admin/adminRight" width="80%" height="90%" name="adminRight" frameborder="no" border="0" marginwidth="0" marginheight="0"></iframe>
 </body>
 </html>

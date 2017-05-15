@@ -15,23 +15,23 @@
     <script src="/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 </head>
 <body>
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form action="/admin/viewPublish?pageNumber=1" class="navbar-form navbar-left">
-                <div class="form-group">
-                    <span class="form-control">发布单状态：</span>
-                    <select name="type" class="form-control">
-                        <option value="0" selected="selected">发布中</option>
-                        <option value="1">已取消</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-default">查看</button>
-            </form>
-        </div>
-    </div>
-</nav>
-<h3>${title}</h3>
+<%--<nav class="navbar navbar-default">--%>
+    <%--<div class="container-fluid">--%>
+        <%--<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">--%>
+            <%--<form action="/admin/viewPublish?pageNumber=1" class="navbar-form navbar-left">--%>
+                <%--<div class="form-group">--%>
+                    <%--<span class="form-control">发布单状态：</span>--%>
+                    <%--<select name="type" class="form-control">--%>
+                        <%--<option value="0" selected="selected">发布中</option>--%>
+                        <%--<option value="1">已取消</option>--%>
+                    <%--</select>--%>
+                <%--</div>--%>
+                <%--<button type="submit" class="btn btn-default">查看</button>--%>
+            <%--</form>--%>
+        <%--</div>--%>
+    <%--</div>--%>
+<%--</nav>--%>
+<%--<h3>${title}</h3>--%>
 <form action="/admin/cancelPublish?pageNumber=${curPage.pageNumber}&type=${type}" method="post">
     <c:forEach var="list" items="${curPage.data}">
         <div class="row">
@@ -58,20 +58,20 @@
     <p>
         总共【${curPage.totalPage}】页 &nbsp;&nbsp;
         ${curPage.pageNumber}/${curPage.totalPage}&nbsp;&nbsp;
-        <a href="/admin/viewPublish?pageNumber=1">首页</a>
+        <a href="/admin/viewPublish?pageNumber=1&type=${type}">首页</a>
         <c:choose>
-            <c:when test="${requestScope.curPage.pageNumber > 1}"><a href="/admin/viewPublish?pageNumber=${curPage.pageNumber-1}">上一页</a></c:when>
+            <c:when test="${requestScope.curPage.pageNumber > 1}"><a href="/admin/viewPublish?pageNumber=${curPage.pageNumber-1}&type=${type}">上一页</a></c:when>
             <c:otherwise>
                 上一页
             </c:otherwise>
         </c:choose>
         <c:choose>
-            <c:when test="${curPage.pageNumber < curPage.totalPage}"><a href="/admin/viewPublish?pageNumber=${curPage.pageNumber+1}">下一页</a></c:when>
+            <c:when test="${curPage.pageNumber < curPage.totalPage}"><a href="/admin/viewPublish?pageNumber=${curPage.pageNumber+1}&type=${type}">下一页</a></c:when>
             <c:otherwise>
                 下一页
             </c:otherwise>
         </c:choose>
-        <a href="/admin/viewPublish?pageNumber=${curPage.totalPage}">尾页</a>
+        <a href="/admin/viewPublish?pageNumber=${curPage.totalPage}&type=${type}">尾页</a>
     </p>
 </div>
 </body>

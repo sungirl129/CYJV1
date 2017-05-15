@@ -15,24 +15,6 @@
     <script src="/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 </head>
 <body>
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form action="/supplier/myApplication?pageNumber=1&type=1" class="navbar-form navbar-left">
-                <div class="form-group">
-                    <span class="form-control">申请单状态：</span>
-                    <select name="type" class="form-control">
-                        <option value="3" selected="selected">全部</option>
-                        <option value="0">未审核</option>
-                        <option value="1">审核通过</option>
-                        <option value="2">审核不通过</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-default">查看</button>
-            </form>
-        </div>
-    </div>
-</nav>
 <c:forEach var="list" items="${nowPage.data}">
     <div class="row">
         <c:forEach var="item" items="${list}">
@@ -57,20 +39,20 @@
     <p>
         总共【${nowPage.totalPage}】页 &nbsp;&nbsp;
         ${nowPage.pageNumber}/${nowPage.totalPage}&nbsp;&nbsp;
-        <a href="/supplier/myApplication?pageNum=1">首页</a>
+        <a href="/supplier/myApplication?pageNum=1&type=${type}">首页</a>
         <c:choose>
-            <c:when test="${requestScope.nowPage.pageNumber > 1}"><a href="/supplier/myApplication?pageNum=${nowPage.pageNumber-1}">上一页</a></c:when>
+            <c:when test="${requestScope.nowPage.pageNumber > 1}"><a href="/supplier/myApplication?pageNum=${nowPage.pageNumber-1}&type=${type}">上一页</a></c:when>
             <c:otherwise>
                 上一页
             </c:otherwise>
         </c:choose>
         <c:choose>
-            <c:when test="${nowPage.pageNumber < nowPage.totalPage}"><a href="/supplier/myApplication?pageNum=${nowPage.pageNumber+1}">下一页</a></c:when>
+            <c:when test="${nowPage.pageNumber < nowPage.totalPage}"><a href="/supplier/myApplication?pageNum=${nowPage.pageNumber+1}&type=${type}">下一页</a></c:when>
             <c:otherwise>
                 下一页
             </c:otherwise>
         </c:choose>
-        <a href="/supplier/myApplication?pageNum=${nowPage.totalPage}">尾页</a>
+        <a href="/supplier/myApplication?pageNum=${nowPage.totalPage}&type=${type}">尾页</a>
     </p>
 </div>
 </body>

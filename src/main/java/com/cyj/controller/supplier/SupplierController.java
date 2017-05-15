@@ -108,6 +108,7 @@ public class SupplierController {
             nowPage = applicationService.viewMyApplicationByValid(pageNum, pageSize,supplierId,type);
         }
         nowPage.setRowNum(4);
+        model.addAttribute("type", type);
         model.addAttribute("nowPage",nowPage);
         return "supplier/myApplication";
     }

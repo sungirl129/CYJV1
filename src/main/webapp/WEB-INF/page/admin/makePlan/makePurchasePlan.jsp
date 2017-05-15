@@ -17,7 +17,6 @@
     <script src="/resources/js/export.js"></script>
 </head>
 <body>
-<h4 class="title_h4">制定采购计划</h4>
 <form action="/admin/addPlan" method="post">
     <c:forEach var="list" items="${nowPage.data}">
         <div class="row">
