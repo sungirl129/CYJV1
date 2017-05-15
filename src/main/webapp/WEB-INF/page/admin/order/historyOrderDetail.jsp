@@ -13,66 +13,137 @@
     <link rel="stylesheet" href="/resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
     <script src="/resources/js/jquery-3.1.1.min.js"></script>
     <script src="/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/resources/AmazeUI-2.7.2/assets/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="/resources/AmazeUI-2.7.2/assets/css/app.css">
+    <script src="/resources/AmazeUI-2.7.2/assets/js/amazeui.min.js"></script>
 </head>
 <body>
-
-<a class="btn btn-primary" role="button" data-toggle="collapse" href="#order" aria-expanded="false" aria-controls="collapseExample">
-    订单信息
-</a>
-<div class="collapse" id="order">
-    <div class="well">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <ul class="list-group">
-                    <li class="list-group-item">货物名称:${goodsModel.gname}</li>
-                    <li class="list-group-item">供货商名称:${supplierModel.corporation}</li>
-                    <li class="list-group-item">供货数量:${applicationModel.supplyNumber}</li>
-                    <li class="list-group-item">单价:${applicationModel.price}</li>
-                    <li class="list-group-item">接收数量:${orderModel.acceptNumber}</li>
-                    <li class="list-group-item">已付金额:${orderModel.payedMoney}</li>
-                </ul>
+<div class="am-panel-group" id="accordion">
+    <div class="am-panel am-panel-default">
+        <div class="am-panel-hd">
+            <h4 class="am-panel-title" data-am-collapse="{parent: '#accordion', target: '#do-not-say-1'}">
+                订单信息
+            </h4>
+        </div>
+        <div id="do-not-say-1" class="am-panel-collapse am-collapse am-in">
+            <div class="am-panel-bd">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">货物名称:${goodsModel.gname}</li>
+                            <li class="list-group-item">供货商名称:${supplierModel.corporation}</li>
+                            <li class="list-group-item">供货数量:${applicationModel.supplyNumber}</li>
+                            <li class="list-group-item">单价:${applicationModel.price}</li>
+                            <li class="list-group-item">接收数量:${orderModel.acceptNumber}</li>
+                            <li class="list-group-item">已付金额:${orderModel.payedMoney}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="am-panel am-panel-default">
+        <div class="am-panel-hd">
+            <h4 class="am-panel-title" data-am-collapse="{parent: '#accordion', target: '#do-not-say-2'}">
+                商品信息
+            </h4>
+        </div>
+        <div id="do-not-say-2" class="am-panel-collapse am-collapse">
+            <div class="am-panel-bd">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">货物名称:${goodsModel.gname}</li>
+                            <li class="list-group-item">单位:${goodsModel.unit}</li>
+                            <li class="list-group-item">规格:${goodsModel.spec}</li>
+                            <li class="list-group-item">备注:${goodsModel.note}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="am-panel am-panel-default">
+        <div class="am-panel-hd">
+            <h4 class="am-panel-title" data-am-collapse="{parent: '#accordion', target: '#do-not-say-3'}">
+                供货商信息
+            </h4>
+        </div>
+        <div id="do-not-say-3" class="am-panel-collapse am-collapse">
+            <div class="am-panel-bd">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ul class="list-group">
+                            <li class="list-group-item">供货商名称:${supplierModel.corporation}</li>
+                            <li class="list-group-item">地址:${supplierModel.address}</li>
+                            <li class="list-group-item">tel:${supplierModel.tel}</li>
+                            <li class="list-group-item">email:${supplierModel.email}</li>
+                            <li class="list-group-item">信誉等级:${supplierModel.credit}</li>
+                            <li class="list-group-item">联系人:${supplierModel.name}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<%--<a class="btn btn-primary" role="button" data-toggle="collapse" href="#order" aria-expanded="false" aria-controls="collapseExample">--%>
+    <%--订单信息--%>
+<%--</a>--%>
+<%--<div class="collapse" id="order">--%>
+    <%--<div class="well">--%>
+        <%--<div class="panel panel-default">--%>
+            <%--<div class="panel-body">--%>
+                <%--<ul class="list-group">--%>
+                    <%--<li class="list-group-item">货物名称:${goodsModel.gname}</li>--%>
+                    <%--<li class="list-group-item">供货商名称:${supplierModel.corporation}</li>--%>
+                    <%--<li class="list-group-item">供货数量:${applicationModel.supplyNumber}</li>--%>
+                    <%--<li class="list-group-item">单价:${applicationModel.price}</li>--%>
+                    <%--<li class="list-group-item">接收数量:${orderModel.acceptNumber}</li>--%>
+                    <%--<li class="list-group-item">已付金额:${orderModel.payedMoney}</li>--%>
+                <%--</ul>--%>
+            <%--</div>--%>
+        <%--</div>--%>
+    <%--</div>--%>
+<%--</div>--%>
 
-<a class="btn btn-primary" role="button" data-toggle="collapse" href="#goods" aria-expanded="false" aria-controls="collapseExample">
-    商品信息
-</a>
-<div class="collapse" id="goods">
-    <div class="well">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <ul class="list-group">
-                    <li class="list-group-item">货物名称:${goodsModel.gname}</li>
-                    <li class="list-group-item">单位:${goodsModel.unit}</li>
-                    <li class="list-group-item">规格:${goodsModel.spec}</li>
-                    <li class="list-group-item">备注:${goodsModel.note}</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+<%--<a class="btn btn-primary" role="button" data-toggle="collapse" href="#goods" aria-expanded="false" aria-controls="collapseExample">--%>
+    <%--商品信息--%>
+<%--</a>--%>
+<%--<div class="collapse" id="goods">--%>
+    <%--<div class="well">--%>
+        <%--<div class="panel panel-default">--%>
+            <%--<div class="panel-body">--%>
+                <%--<ul class="list-group">--%>
+                    <%--<li class="list-group-item">货物名称:${goodsModel.gname}</li>--%>
+                    <%--<li class="list-group-item">单位:${goodsModel.unit}</li>--%>
+                    <%--<li class="list-group-item">规格:${goodsModel.spec}</li>--%>
+                    <%--<li class="list-group-item">备注:${goodsModel.note}</li>--%>
+                <%--</ul>--%>
+            <%--</div>--%>
+        <%--</div>--%>
+    <%--</div>--%>
+<%--</div>--%>
 
-<a class="btn btn-primary" role="button" data-toggle="collapse" href="#supplier" aria-expanded="false" aria-controls="collapseExample">
-    供货商信息
-</a>
-<div class="collapse" id="supplier">
-    <div class="well">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <ul class="list-group">
-                    <li class="list-group-item">供货商名称:${supplierModel.corporation}</li>
-                    <li class="list-group-item">地址:${supplierModel.address}</li>
-                    <li class="list-group-item">tel:${supplierModel.tel}</li>
-                    <li class="list-group-item">email:${supplierModel.email}</li>
-                    <li class="list-group-item">信誉等级:${supplierModel.credit}</li>
-                    <li class="list-group-item">联系人:${supplierModel.name}</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+<%--<a class="btn btn-primary" role="button" data-toggle="collapse" href="#supplier" aria-expanded="false" aria-controls="collapseExample">--%>
+    <%--供货商信息--%>
+<%--</a>--%>
+<%--<div class="collapse" id="supplier">--%>
+    <%--<div class="well">--%>
+        <%--<div class="panel panel-default">--%>
+            <%--<div class="panel-body">--%>
+                <%--<ul class="list-group">--%>
+                    <%--<li class="list-group-item">供货商名称:${supplierModel.corporation}</li>--%>
+                    <%--<li class="list-group-item">地址:${supplierModel.address}</li>--%>
+                    <%--<li class="list-group-item">tel:${supplierModel.tel}</li>--%>
+                    <%--<li class="list-group-item">email:${supplierModel.email}</li>--%>
+                    <%--<li class="list-group-item">信誉等级:${supplierModel.credit}</li>--%>
+                    <%--<li class="list-group-item">联系人:${supplierModel.name}</li>--%>
+                <%--</ul>--%>
+            <%--</div>--%>
+        <%--</div>--%>
+    <%--</div>--%>
+<%--</div>--%>
 
 <table class="table table-bordered">
     <caption>到货信息</caption>

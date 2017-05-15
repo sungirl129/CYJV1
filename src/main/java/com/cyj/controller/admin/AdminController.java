@@ -482,6 +482,7 @@ public class AdminController {
         if(!payService.insetPayItem(payModel)) throw new Exception("error");
         if(!orderService.changePayedMoney(orderId,payMoney)) throw new Exception("error");
         if(orderService.SupplyNumberEqualsArriveNumber(orderId)) {
+            //logger.info("supplyNumber全部到");
             if(orderService.checkPayedMoney(orderId)) {
                 orderService.changeOrderState(orderId,1);
                 OrderModel orderModel = orderService.findModelById(orderId);
@@ -492,6 +493,8 @@ public class AdminController {
                 int month = calendar.get(Calendar.MONTH) + 1;
                 statisticsService.updateInNumber(acceptNumber, goodsId, year, month);
             }
+        } else {
+           // logger.info("supplyNumberbbbb全部到");
         }
         String url = "redirect:/admin/orderDetail?orderId=" + orderId;
         return url;

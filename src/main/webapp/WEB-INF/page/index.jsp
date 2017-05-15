@@ -12,8 +12,8 @@
 </head>
 <body>
 
-<iframe src="/home/homeTop" width="100%" height="15%"></iframe>
-<iframe src="/home/homeLeft" width="20%" height="84%"></iframe>
-<iframe src="/home/homeRight" width="78%" height="84%" name="homeRight"></iframe>
+<iframe src="/home/homeTop" width="100%" height="15%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<iframe src="/home/homeLeft" width="20%" height="84%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+<iframe src="/home/homeRight" width="78%" height="84%" name="homeRight" frameborder="no" border="0" marginwidth="0" marginheight="0"></iframe>
 </body>
 </html>

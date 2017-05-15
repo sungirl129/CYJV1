@@ -53,8 +53,18 @@ public class OrderDaoImpl implements OrderDao{
     }
 
     @Override
+    public List<OrderModel> getConditionItemBySupplierIdAndState(@Param("supplierId") int supplierId, @Param("goodsId") int goodsId, @Param("state") int state) {
+        return sqlSession.getMapper(OrderDao.class).getConditionItemBySupplierIdAndState(supplierId, goodsId, state);
+    }
+
+    @Override
     public List<OrderModel> getOnePageOrderBySupplierIdandState(@Param("supplierId") int supplierId, @Param("state") int state, @Param("offset") int offset, @Param("pageSize") int pageSize) {
         return sqlSession.getMapper(OrderDao.class).getOnePageOrderBySupplierIdandState(supplierId, state, offset, pageSize);
+    }
+
+    @Override
+    public List<OrderModel> getOnePageConditionOrderBySupplierIdandState(@Param("supplierId") int supplierId, @Param("goodsId") int goodsId, @Param("state") int state, @Param("offset") int offset, @Param("pageSize") int pageSize) {
+        return sqlSession.getMapper(OrderDao.class).getOnePageConditionOrderBySupplierIdandState(supplierId, goodsId, state, offset, pageSize);
     }
 
     @Override

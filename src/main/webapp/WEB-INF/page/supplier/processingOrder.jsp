@@ -15,6 +15,25 @@
     <script src="/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 </head>
 <body>
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form action="/supplier/processingOrder?pageNum=1" id="stockForm" class="navbar-form navbar-left">
+                <div class="form-group">
+                    <select name="type" class="form-control">
+                        <option value="gname" selected="selected">货物名称</option>
+                        <option value="unit">单位</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input style="width: 100px;" type="text" class="form-control" placeholder="Search" name="condition">
+                </div>
+                <button type="submit" class="btn btn-default">搜索</button>
+            </form>
+        </div>
+    </div>
+</nav>
 <c:forEach var="list" items="${nowPage.data}">
     <div class="row">
         <c:forEach var="item" items="${list}">

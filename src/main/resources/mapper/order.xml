@@ -11,6 +11,7 @@
         <result column="supplier_id" property="supplierId"/>
         <result column="valid_date" property="validDate"/>
         <result column="accept_number" property="acceptNumber"/>
+        <result column="returned_number" property="returnedNumber"/>
         <result column="payed_money" property="payedMoney"/>
         <result column="state" property="orderState"/>
     </resultMap>
@@ -47,13 +48,34 @@
         SELECT * FROM `purchasemanage`.`order` WHERE application_id = #{applicationId}
     </select>
 
-    <select id="getItemBySupplierIdAndState" resultMap="order">
-        SELECT * FROM `purchasemanage`.`order` WHERE supplier_id = #{supplierId} AND state = #{state}
+    <!--<select id="getItemBySupplierIdAndState" resultMap="order">-->
+        <!--SELECT * FROM `purchasemanage`.`order` WHERE supplier_id = #{supplierId} AND state = #{state}-->
+    <!--</select>-->
+
+    <select id="getConditionItemBySupplierIdAndState" resultMap="order">
+        SELECT * FROM `purchasemanage`.`order`
+        <where>
+            supplier_id = #{supplierId}
+            AND state = #{state}
+            <if test="goodsId!=0">AND goods_id = #{goodsId}</if>
+        </where>
     </select>
 
-    <select id="getOnePageOrderBySupplierIdandState" resultMap="order">
-        SELECT * FROM `purchasemanage`.`order` WHERE supplier_id = #{supplierId} AND state = #{state} limit #{offset}, #{pageSize}
+    <!--<select id="getOnePageOrderBySupplierIdandState" resultMap="order">-->
+        <!--SELECT * FROM `purchasemanage`.`order` -->
+        <!--WHERE supplier_id = #{supplierId} AND state = #{state} limit #{offset}, #{pageSize}-->
+    <!--</select>-->
+
+    <select id="getOnePageConditionOrderBySupplierIdandState" resultMap="order">
+        SELECT * FROM `purchasemanage`.`order`
+        <where>
+            supplier_id = #{supplierId}
+            AND state = #{state}
+            <if test="goodsId!=0">AND goods_id = #{goodsId}</if>
+        </where>
+        limit #{offset}, #{pageSize}
     </select>
+
     <update id="updateReturnedNumber" parameterType="int">
         UPDATE `purchasemanage`.`order` SET returned_number = #{returnedNumber} WHERE id = #{id}
     </update>

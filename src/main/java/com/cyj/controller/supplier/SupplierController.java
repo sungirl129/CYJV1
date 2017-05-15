@@ -100,7 +100,6 @@ public class SupplierController {
         int pageSize = 4;
         SupplierModel smodel = (SupplierModel)request.getSession().getAttribute("supplier");
         int supplierId = smodel.getId();
-        //logger.info("supplierId:===================================" + supplierId);
         PageUtil nowPage = null;
         if(type == 3) {
             nowPage = applicationService.viewMyApplication(pageNum, pageSize,supplierId);
@@ -114,12 +113,15 @@ public class SupplierController {
     }
 
     @RequestMapping("/processingOrder")
-    public String processingOrder(Model model, @RequestParam(value = "pageNum",defaultValue = "1",required = false)int pageNum, HttpServletRequest request) {
+    public String processingOrder(Model model,
+                                  @RequestParam(value = "condition",defaultValue = "",required = false)String condition,
+                                  @RequestParam(value = "pageNum",defaultValue = "1",required = false)int pageNum,
+                                  HttpServletRequest request) {
         int pageSize = 4;
         SupplierModel smodel = (SupplierModel)request.getSession().getAttribute("supplier");
         int supplierId = smodel.getId();
-       // logger.info("supplierId:=================" + supplierId);
-        PageUtil nowPage = orderService.viewOnePageMyOrder(pageNum,pageSize,supplierId,0);
+        String gname = condition;
+        PageUtil nowPage = orderService.searchMyOrderByCondition(pageNum,pageSize,supplierId,gname,0);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage",nowPage);
         return "supplier/processingOrder";
@@ -148,11 +150,16 @@ public class SupplierController {
     }
 
     @RequestMapping("/purchaseHistory")
-    public String purchaseHistory(Model model, @RequestParam(value = "pageNum",defaultValue = "1",required = false)int pageNum, HttpServletRequest request) {
+    public String purchaseHistory(Model model,
+                                  @RequestParam(value = "condition",defaultValue = "",required = false)String condition,
+                                  @RequestParam(value = "pageNum",defaultValue = "1",required = false)int pageNum,
+                                  HttpServletRequest request) {
         int pageSize = 4;
         SupplierModel smodel = (SupplierModel)request.getSession().getAttribute("supplier");
         int supplierId = smodel.getId();
-        PageUtil nowPage = orderService.viewOnePageMyOrder(pageNum,pageSize,supplierId,1);
+        String gname = condition;
+        PageUtil nowPage = orderService.searchMyOrderByCondition(pageNum,pageSize,supplierId,gname,1);
+//        PageUtil nowPage = orderService.viewOnePageMyOrder(pageNum,pageSize,supplierId,1);
         nowPage.setRowNum(4);
         model.addAttribute("nowPage", nowPage);
         return "supplier/purchaseHistory";

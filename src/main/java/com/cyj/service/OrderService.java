@@ -93,11 +93,14 @@ public class OrderService {
     public boolean SupplyNumberEqualsArriveNumber(int orderId) {
         OrderModel orderModel = orderDao.findModelById(orderId);
         int acceptNumber = orderModel.getAcceptNumber();
+       // System.out.println(acceptNumber);
         int returnedNumber = orderModel.getReturnedNumber();
+        System.out.println(returnedNumber);
         int totalArriveNumber = acceptNumber + returnedNumber;
         int applicationId = getApplicationIdByOrderId(orderId);
         ApplicationModel applicationModel = applicationService.findModelById(applicationId);
         int supplyNumber = applicationModel.getSupplyNumber();
+       // System.out.println(supplyNumber);
         return (totalArriveNumber == supplyNumber);
     }
 
@@ -119,21 +122,25 @@ public class OrderService {
         return (orderDao.updateState(state,orderId) == 1);
     }
 
-
-    //供货商查看订单
-    public PageUtil viewOnePageMyOrder(int pageNum, int pageSize, int supplierId, int state) {
+    public PageUtil searchMyOrderByCondition(int pageNum, int pageSize, int supplierId, String gname, int state) {
         List<Map<String,Object>> list = new ArrayList<>();
-        int totalCount = getMyOrderTotalCount(supplierId, state);
+        int goodsId = 0;
+        if(gname != null) {
+            if(!gname.equals("")) {
+                goodsId = stockService.findGoodsIdByGname(gname);
+            }
+        }
+        int totalCount = getMyOrderTotalCountByCondition(supplierId, goodsId, state);
         int offset = (pageNum - 1) * pageSize;
-        List<OrderModel> orderModelList = orderDao.getOnePageOrderBySupplierIdandState(supplierId, state, offset, pageSize);
+        List<OrderModel> orderModelList = orderDao.getOnePageConditionOrderBySupplierIdandState(supplierId, goodsId, state, offset, pageSize);
         for(OrderModel orderModel:orderModelList) {
             Map<String,Object> map = new HashMap<>();
-            map.put("orderModel",orderModel);
             int applicationId = orderModel.getApplicationId();
             ApplicationModel applicationModel = applicationService.findModelById(applicationId);
+            map.put("orderModel",orderModel);
             map.put("applicationModel",applicationModel);
-            int goodsId = orderModel.getGoodsId();
-            GoodsModel goodsModel = stockService.findGoodsModelByGoodsId(goodsId);
+            int gid = orderModel.getGoodsId();
+            GoodsModel goodsModel = stockService.findGoodsModelByGoodsId(gid);
             map.put("goodsModel",goodsModel);
             list.add(map);
         }
@@ -143,10 +150,40 @@ public class OrderService {
         return pageUtil;
     }
 
-    public int getMyOrderTotalCount(int supplierId, int state) {
-        List<OrderModel> orderModelList = orderDao.getItemBySupplierIdAndState(supplierId, state);
+    public int getMyOrderTotalCountByCondition(int supplierId, int goodsId, int state) {
+        List<OrderModel> orderModelList = orderDao.getConditionItemBySupplierIdAndState(supplierId, goodsId, state);
         return orderModelList.size();
     }
+
+
+    //供货商查看订单
+//    public PageUtil viewOnePageMyOrder(int pageNum, int pageSize, int supplierId, int state) {
+//        List<Map<String,Object>> list = new ArrayList<>();
+//        int totalCount = getMyOrderTotalCount(supplierId, state);
+//        int offset = (pageNum - 1) * pageSize;
+//        List<OrderModel> orderModelList = orderDao.getOnePageOrderBySupplierIdandState(supplierId, state, offset, pageSize);
+//        for(OrderModel orderModel:orderModelList) {
+//            Map<String,Object> map = new HashMap<>();
+//            map.put("orderModel",orderModel);
+//            int applicationId = orderModel.getApplicationId();
+//            ApplicationModel applicationModel = applicationService.findModelById(applicationId);
+//            map.put("applicationModel",applicationModel);
+//            int goodsId = orderModel.getGoodsId();
+//            GoodsModel goodsModel = stockService.findGoodsModelByGoodsId(goodsId);
+//            map.put("goodsModel",goodsModel);
+//            list.add(map);
+//        }
+//        PageUtil pageUtil = new PageUtil(pageSize,totalCount);
+//        pageUtil.setData(list);
+//        pageUtil.setPageNumber(pageNum);
+//        return pageUtil;
+//    }
+
+
+//    public int getMyOrderTotalCount(int supplierId, int state) {
+//        List<OrderModel> orderModelList = orderDao.getItemBySupplierIdAndState(supplierId, state);
+//        return orderModelList.size();
+//    }
 
     public boolean setReturnedNumber(int returnedNumber, int id) {
         return (orderDao.updateReturnedNumber(returnedNumber, id) == 1);
