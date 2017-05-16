@@ -168,7 +168,7 @@ public class SupplierController {
     @RequestMapping("/supplierExit")
     public String supplierExit(Model model, HttpServletRequest request) {
         request.getSession().removeAttribute("supplier");
-        return "index";
+        return "main";
     }
 
     @RequestMapping("/modifySupplier")

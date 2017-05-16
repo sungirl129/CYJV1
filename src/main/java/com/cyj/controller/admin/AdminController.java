@@ -319,7 +319,7 @@ public class AdminController {
             if(!publishService.publishSchedule(publishModel)) throw new Exception("error");
             if(!publishService.deleteItem(publishId)) throw new Exception("error");
         }
-        String url = "redirect:/admin/viewPublish?pageNumber=" + pageNumber;
+        String url = "redirect:/admin/viewPublish?pageNumber=" + pageNumber +  "&type=" + type;
         return url;
     }
 
@@ -595,7 +595,7 @@ public class AdminController {
     @RequestMapping("/adminExit")
     public String adminExit(Model model, HttpServletRequest request) {
         request.getSession().removeAttribute("admin");
-        return "index";
+        return "main";
     }
 
     @RequestMapping("/viewStatistics")

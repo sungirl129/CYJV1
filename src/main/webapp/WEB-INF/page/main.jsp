@@ -121,7 +121,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <button type="submit" class="btn btn-default btn-primary">登录</button>
+                            <button type="submit" class="btn btn-default btn-primary">注册</button>
                         </div>
                     </div>
                 </form>
@@ -131,7 +131,7 @@
     </div>
     <footer class="footer">
         <div class="container">
-            <p class="text-muted">Power By Miss.Chu</p>
+            <p class="text-muted">Power By ChuYingjun</p>
         </div>
     </footer>
 </body>
