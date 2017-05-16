@@ -23,36 +23,6 @@ public class HomeController {
     @Resource
     private SupplierService supplierService;
 
-    @RequestMapping("/homeTop")
-    public String homeTop(Model model) {
-        return "home/homeTop";
-    }
-
-    @RequestMapping("/homeLeft")
-    public String homeLeft(Model model) {
-        return "home/homeLeft";
-    }
-
-    @RequestMapping("/homeRight")
-    public String homeRight(Model model) {
-        return "home/logIn";
-    }
-
-    @RequestMapping("/homeInfo")
-    public String homeInfo(Model model) {
-        return "home/homeInfo";
-    }
-
-    @RequestMapping("/purchaseInfo")
-    public String purchaseInfo(Model model) {
-        return "home/purchaseInfo";
-    }
-
-    @RequestMapping("/logIn")
-    public String logIn(Model model) {
-        return "home/logIn";
-    }
-
     @RequestMapping("/adminValid")
     public String adminValid(Model model, String NT, String password, HttpServletRequest request) {
         boolean flag = adminService.adminValid(NT, password);
@@ -89,7 +59,7 @@ public class HomeController {
         supplierModel.setUsername(username);
         supplierModel.setPassword(password);
         supplierModel.setCredit(1);
-        boolean flag = supplierService.insertSupplier(supplierModel);
-        return "home/logIn";
+        supplierService.insertSupplier(supplierModel);
+        return "index";
     }
 }

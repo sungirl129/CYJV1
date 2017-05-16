@@ -23,7 +23,6 @@
                 <div class="form-group">
                     <select name="type" class="form-control">
                         <option value="gname" selected="selected">货物名称</option>
-                        <option value="unit">单位</option>
                     </select>
                 </div>
                 <div class="form-group">
