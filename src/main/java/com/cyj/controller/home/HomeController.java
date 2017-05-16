@@ -23,6 +23,11 @@ public class HomeController {
     @Resource
     private SupplierService supplierService;
 
+    @RequestMapping("/")
+    public String index(){
+        return "main";
+    }
+
     @RequestMapping("/adminValid")
     public String adminValid(Model model, String NT, String password, HttpServletRequest request) {
         boolean flag = adminService.adminValid(NT, password);
@@ -32,7 +37,7 @@ public class HomeController {
             request.getSession().setAttribute("admin", adminModel);
             return "admin/adminMain";
         } else {
-            return "index";
+            return "main";
         }
     }
 
@@ -44,7 +49,7 @@ public class HomeController {
             request.getSession().setAttribute("supplier", supplierModel);
             return "supplier/supplierMain";
         } else {
-            return "index";
+            return "main";
         }
     }
 
@@ -60,6 +65,6 @@ public class HomeController {
         supplierModel.setPassword(password);
         supplierModel.setCredit(1);
         supplierService.insertSupplier(supplierModel);
-        return "index";
+        return "main";
     }
 }
