@@ -605,6 +605,7 @@ public class AdminController {
 
     @RequestMapping("/statistics")
     public String statistics(Model model) {
+
         return "admin/statistics/statistics";
     }
 
@@ -683,8 +684,17 @@ public class AdminController {
 
 
     @RequestMapping("/predict")
-    public String predict(Model model) {
-        int[] plan = predictService.predict();
+    public String predict(Model model,@RequestParam(value = "gname",defaultValue = "",required = false) String gname) {
+        int[] plan;
+        if((gname != null) && (!gname.equals(""))) {
+            plan = predictService.predict(gname);
+        } else {
+            plan = new int[12];
+            for(int i = 0; i < 12; i++) {
+                plan[i] = 0;
+            }
+        }
+        model.addAttribute("gname", gname);
         model.addAttribute("plan", plan);
         return "admin/predict/predict";
     }

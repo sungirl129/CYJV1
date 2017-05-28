@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cyj.dao.PredictDao">
+    <resultMap id="predict" type="com.cyj.model.PredictModel">
+        <id column="id" property="id"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="year" property="year"/>
+        <result column="month" property="month"/>
+        <result column="plan" property="plan"/>
+    </resultMap>
+    <select id="getPredict" resultMap="predict" parameterType="int">
+        select * from predict where goods_id = #{goodsId}
+    </select>
+</mapper>
+

@@ -8,6 +8,15 @@ public class PredictModel {
     private int year;
     private int month;
     private int plan;
+    private int goodsId;
+
+    public int getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(int goodsId) {
+        this.goodsId = goodsId;
+    }
 
     public int getId() {
         return id;
